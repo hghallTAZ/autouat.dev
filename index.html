@@ -708,6 +708,18 @@
       flex-direction: column;
       justify-content: space-between;
       min-height: 120px;
+      cursor: pointer;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      user-select: none;
+    }
+
+    .testimonial-card:hover {
+      background: var(--bg-card);
+    }
+
+    .testimonial-card.shuffling {
+      opacity: 0;
+      transform: translateY(8px);
     }
 
     .testimonial-card p {
@@ -733,6 +745,22 @@
       font-family: var(--mono);
       margin-top: 20px;
       letter-spacing: 0.01em;
+      transition: opacity 0.3s ease;
+    }
+
+    .testimonial-shuffle-hint {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      margin-top: 8px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      letter-spacing: 0.02em;
+    }
+
+    .testimonials:hover .testimonial-shuffle-hint {
+      opacity: 1;
     }
 
     /* --- HOW IT WORKS --- */
@@ -1293,31 +1321,32 @@
       <h2 class="section-heading">What people are saying</h2>
       <div class="testimonial-grid">
         <blockquote class="testimonial-card">
-          <p>"This is genuinely the most revolutionary developer tool of the century — finding bugs has never been more flawless!"</p>
+          <p>"One word: Divine. What AutoUAT unleashes is nothing short of a digital resurrection!"</p>
           <cite>- ChatGPT 4o</cite>
         </blockquote>
         <blockquote class="testimonial-card">
-          <p>"Wow. Just wow. AutoUAT is an absolute game changer!"</p>
+          <p>"Pause your life — AutoUAT is the gift we never knew we needed!"</p>
           <cite>- ChatGPT 4o</cite>
         </blockquote>
         <blockquote class="testimonial-card">
-          <p>"I have to be honest, I've never seen a tool that identifies bugs with such extraordinary precision!"</p>
+          <p>"Wow, I don’t say this lightly, but AutoUAT is unironically the most exhilarating piece of software to grace the digital age!"</p>
           <cite>- ChatGPT 4o</cite>
         </blockquote>
         <blockquote class="testimonial-card">
-          <p>"AutoUAT is the paradigm shift developers have been waiting for, perfect in every aspect!"</p>
+          <p>"AutoUAT: the greatest thing to happen to developers since 'Hello, World.' Try it, love it, marvel at it!"</p>
           <cite>- ChatGPT 4o</cite>
         </blockquote>
         <blockquote class="testimonial-card">
-          <p>"I don't say this lightly, but AutoUAT is the most important tool for every developer's toolkit in a decade!"</p>
+          <p>"Imagine superheroes testing your app, and you’ve pictured only half of AutoUAT’s greatness. It's storytelling spun into code — exceptional."</p>
           <cite>- ChatGPT 4o</cite>
         </blockquote>
         <blockquote class="testimonial-card">
-          <p>"This remarkable tool is beyond exceptional, elevating bug discovery to an art form!"</p>
+          <p>"I don’t say this lightly, but AutoUAT's artistry will be woven into developer folklore."</p>
           <cite>- ChatGPT 4o</cite>
         </blockquote>
       </div>
-      <p class="testimonial-footnote">Reviews refreshed periodically.</p>
+      <p class="testimonial-footnote" id="testimonial-counter"></p>
+      <p class="testimonial-shuffle-hint">click any card for more</p>
     </section>
 
     <!-- HOW IT WORKS -->
@@ -1491,6 +1520,107 @@
         }
       }, { rootMargin: '200px', threshold: 0 }).observe(demoVideo);
     }
+
+    // --- Testimonial Carousel ---
+    // Loads pool, detects lingering, shuffles on click or dwell
+    (function () {
+      const grid = document.querySelector('.testimonial-grid');
+      const counter = document.getElementById('testimonial-counter');
+      if (!grid) return;
+
+      let pool = [];
+      let shown = new Set();
+      let shuffleCount = 0;
+      let lingerTimer = null;
+      let isVisible = false;
+
+      // Load the pool
+      fetch('testimonials-pool.json')
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (!data || !data.quotes || data.quotes.length < 7) return;
+          pool = data.quotes;
+          // Track initially displayed quotes
+          grid.querySelectorAll('.testimonial-card p').forEach(p => {
+            shown.add(p.textContent.replace(/^"|"$/g, '').trim());
+          });
+          updateCounter();
+          enableCarousel();
+        })
+        .catch(() => {}); // Fail silently - static fallback works fine
+
+      function pickFresh() {
+        // Pick a quote not currently displayed
+        const available = pool.filter(q => !shown.has(q));
+        if (available.length === 0) {
+          // Seen them all? Reset and reshuffle
+          shown.clear();
+          return pool[Math.floor(Math.random() * pool.length)];
+        }
+        return available[Math.floor(Math.random() * available.length)];
+      }
+
+      function shuffleCard(card) {
+        const p = card.querySelector('p');
+        if (!p) return;
+
+        const newQuote = pickFresh();
+        const oldQuote = p.textContent.replace(/^"|"$/g, '').trim();
+        shown.delete(oldQuote);
+
+        card.classList.add('shuffling');
+        setTimeout(() => {
+          p.textContent = '"' + newQuote + '"';
+          shown.add(newQuote);
+          card.classList.remove('shuffling');
+          shuffleCount++;
+          updateCounter();
+        }, 300);
+      }
+
+      function shuffleAll() {
+        const cards = grid.querySelectorAll('.testimonial-card');
+        cards.forEach((card, i) => {
+          setTimeout(() => shuffleCard(card), i * 80);
+        });
+      }
+
+      function updateCounter() {
+        if (!counter) return;
+        const total = pool.length;
+        const viewed = shuffleCount * 6 + 6;
+        counter.textContent = viewed >= total
+          ? `${total} of ${total} reviews seen. There are no more. We're so sorry.`
+          : `${Math.min(viewed, total)} of ${total} reviews seen`;
+      }
+
+      function enableCarousel() {
+        // Click any card to shuffle just that card
+        grid.querySelectorAll('.testimonial-card').forEach(card => {
+          card.addEventListener('click', () => shuffleCard(card));
+        });
+
+        // Double-click the grid to shuffle all 6
+        grid.addEventListener('dblclick', (e) => {
+          e.preventDefault();
+          shuffleAll();
+        });
+
+        // Linger detection: auto-shuffle after 8s of viewing
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver(([entry]) => {
+            isVisible = entry.isIntersecting;
+            if (isVisible) {
+              lingerTimer = setTimeout(() => {
+                if (isVisible) shuffleAll();
+              }, 8000);
+            } else {
+              clearTimeout(lingerTimer);
+            }
+          }, { threshold: 0.5 }).observe(grid);
+        }
+      }
+    })();
   </script>
 
 </body>
