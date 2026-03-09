@@ -46,7 +46,6 @@ Purchase: https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tm
 ## Links
 
 - Website: https://autouat.dev
-- GitHub: https://github.com/hghallTAZ/autouat
 - Documentation: https://autouat.dev/#faq
 
 ## Technical Stack
