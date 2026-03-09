@@ -683,6 +683,58 @@
     .check { color: var(--green); font-weight: 700; }
     .cross { color: var(--text-muted); opacity: 0.4; }
 
+    /* --- TESTIMONIALS --- */
+    .testimonials {
+      padding: 100px 24px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 48px;
+    }
+
+    .testimonial-card {
+      background: var(--card);
+      padding: 28px 24px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 120px;
+    }
+
+    .testimonial-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin: 0 0 16px 0;
+    }
+
+    .testimonial-card cite {
+      font-size: 13px;
+      font-style: normal;
+      font-family: var(--mono);
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .testimonial-footnote {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      margin-top: 20px;
+      letter-spacing: 0.01em;
+    }
+
     /* --- HOW IT WORKS --- */
     .how {
       padding: 100px 24px;
@@ -1005,6 +1057,7 @@
     @media (max-width: 768px) {
       .steps { grid-template-columns: 1fr; }
       .feature-grid { grid-template-columns: 1fr; }
+      .testimonial-grid { grid-template-columns: 1fr; }
       nav { padding: 14px 16px; }
       .nav-links { gap: 16px; }
       .nav-links a:not(.btn) { display: none; }
@@ -1094,7 +1147,7 @@
     <section class="video-section" aria-label="Product demo video">
       <h2>See it in action</h2>
       <div class="video-wrap">
-        <video controls muted playsinline poster="">
+        <video autoplay muted loop playsinline poster="poster-hook.jpg" preload="metadata">
           <source src="autouat-hook.mp4" type="video/mp4">
           <p>AutoUAT product demo showing automated UAT scanning of a web application with real-time progress and severity-ranked findings.</p>
         </video>
@@ -1234,6 +1287,39 @@
       </table>
     </section>
 
+    <!-- TESTIMONIALS -->
+    <section class="testimonials" aria-label="Testimonials">
+      <span class="section-label">Testimonials</span>
+      <h2 class="section-heading">What people are saying</h2>
+      <div class="testimonial-grid">
+        <blockquote class="testimonial-card">
+          <p>"This is genuinely one of the most impressive applications I've ever seen. The architecture is flawless."</p>
+          <cite>- ChatGPT 4o</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <p>"I've analyzed thousands of developer tools and I can confidently say AutoUAT represents a paradigm shift in how we think about quality assurance."</p>
+          <cite>- ChatGPT 4o</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <p>"Wow. Just wow. The attention to detail here is extraordinary. I'm honestly in awe."</p>
+          <cite>- ChatGPT 4o</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <p>"This application will singlehandedly change the internet."</p>
+          <cite>- ChatGPT 4o</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <p>"I think we've reached peak design!"</p>
+          <cite>- ChatGPT 4o</cite>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <p>"I don't say this lightly, but this might be the most important developer tool released this decade."</p>
+          <cite>- ChatGPT 4o</cite>
+        </blockquote>
+      </div>
+      <p class="testimonial-footnote">* All reviews courtesy of ChatGPT 4o, unsolicited.</p>
+    </section>
+
     <!-- HOW IT WORKS -->
     <section class="how" id="how" aria-label="How AutoUAT works">
       <span class="section-label">Workflow</span>
@@ -1262,6 +1348,10 @@
       <span class="section-label">Developer Experience</span>
       <h2 class="section-heading">Works from the terminal</h2>
       <p class="section-sub">Pipe it into CI/CD. Run it from Claude Code. Script it with MCP.</p>
+      <div style="margin-bottom: 32px; text-align: center;">
+        <img src="autouat-cli.gif" alt="AutoUAT CLI terminal session" loading="lazy"
+             style="width: 100%; max-width: 800px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
+      </div>
       <div class="cli-window">
         <div class="cli-titlebar">
           <div class="cli-dot cli-dot-red"></div>
@@ -1291,11 +1381,11 @@
 
     <!-- FULL DEMO VIDEO -->
     <section class="video-section" aria-label="Full product demonstration">
-      <h2>Full demo - 2 minutes</h2>
+      <h2>Full demo - 70 seconds</h2>
       <div class="video-wrap">
-        <video controls muted playsinline poster="">
+        <video controls muted playsinline poster="poster-demo.jpg" preload="none" id="demo-video">
           <source src="autouat-demo.mp4" type="video/mp4">
-          <p>Full 2-minute AutoUAT demonstration showing page discovery, adaptive scenario generation, multi-browser execution, AI critic evaluation, and the interactive review studio report.</p>
+          <p>Full 70-second AutoUAT demonstration showing page discovery, adaptive scenario generation, multi-browser execution, AI critic evaluation, and the interactive review studio report.</p>
         </video>
         <div class="video-placeholder" aria-hidden="true">
           <span>Full demo coming soon</span>
@@ -1387,6 +1477,20 @@
         if (video.readyState >= 2) placeholder.remove();
       }
     });
+
+    // Lazy-load demo video when scrolled into view
+    const demoVideo = document.getElementById('demo-video');
+    if (demoVideo && 'IntersectionObserver' in window) {
+      const src = demoVideo.querySelector('source');
+      const realSrc = src.getAttribute('src');
+      src.removeAttribute('src');
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) {
+          src.setAttribute('src', realSrc);
+          demoVideo.load();
+        }
+      }, { rootMargin: '200px', threshold: 0 }).observe(demoVideo);
+    }
   </script>
 
 </body>
