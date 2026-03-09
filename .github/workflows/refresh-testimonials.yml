@@ -1,0 +1,37 @@
+name: Refresh GPT-4o Testimonials
+
+on:
+  schedule:
+    # Every Monday at 10:07am UTC (~3am MST)
+    - cron: '7 10 * * 1'
+  workflow_dispatch: # Manual trigger from GitHub UI
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install openai
+
+      - name: Generate fresh testimonials
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/refresh-testimonials.mjs --deploy-ci
+
+      - name: Commit and push
+        run: |
+          git config user.name "GPT-4o Testimonial Bot"
+          git config user.email "testimonials@autouat.dev"
+          git add index.html
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "Refresh GPT-4o testimonials (automated weekly)"
+          git push
