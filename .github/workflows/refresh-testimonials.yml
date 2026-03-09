@@ -31,7 +31,7 @@ jobs:
         run: |
           git config user.name "GPT-4o Testimonial Bot"
           git config user.email "testimonials@autouat.dev"
-          git add index.html
+          git add index.html testimonials-pool.json
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "Refresh GPT-4o testimonials (automated weekly)"
           git push

@@ -133,15 +133,20 @@ async function generatePool() {
   return unique;
 }
 
+const AVATAR_SVG = '<svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>';
+
 function buildInitialHTML(quotes) {
   return quotes
     .slice(0, INITIAL_DISPLAY)
     .map(
       (q) =>
-        `        <blockquote class="testimonial-card">
-          <p>"${q}"</p>
-          <cite>- ChatGPT 4o</cite>
-        </blockquote>`
+        `          <blockquote class="testimonial-card">
+            <p>\u201C${q}\u201D</p>
+            <div class="testimonial-card-footer">
+              <div class="testimonial-avatar">${AVATAR_SVG}</div>
+              <cite>- ChatGPT 4o</cite>
+            </div>
+          </blockquote>`
     )
     .join("\n");
 }
@@ -150,7 +155,7 @@ function spliceIntoHTML(newCards) {
   let html = readFileSync(INDEX_PATH, "utf-8");
 
   const gridOpen = '<div class="testimonial-grid">';
-  const gridClose = "      </div>\n      <p";
+  const gridClose = "        </div>\n        <button";
 
   const startIdx = html.indexOf(gridOpen);
   if (startIdx === -1) throw new Error("Could not find testimonial-grid div");

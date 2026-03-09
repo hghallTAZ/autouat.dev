@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AutoUAT - AI-Powered UAT Testing That Finds Bugs Humans Miss</title>
-  <meta name="description" content="AutoUAT is a stochastic UAT/UX optimization runner. Point it at any web app URL - it crawls pages, generates test scenarios using adaptive sampling, and produces severity-ranked HTML reports with inline screenshots. No test code required. $39 one-time.">
+  <meta name="description" content="AutoUAT is a stochastic UAT/UX optimization runner. Point it at any web app URL - it crawls pages, generates test scenarios using adaptive sampling, and produces severity-ranked HTML reports with inline screenshots. No test code required. $39 one-time purchase, own it forever.">
   <meta name="author" content="SIMPLYMAN LLC">
   <meta name="keywords" content="UAT testing, automated testing, AI testing, UX testing, bug finder, Playwright automation, browser testing, accessibility testing, stochastic testing, QA automation">
   <link rel="canonical" href="https://autouat.dev/">
@@ -12,7 +12,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="AutoUAT - Find Bugs Humans Miss">
-  <meta property="og:description" content="Stochastic UAT runner with AI-powered evaluation. Zero-config URL scanning across browsers, viewports, and user roles. $39 one-time.">
+  <meta property="og:description" content="Stochastic UAT runner with AI-powered evaluation. Zero-config URL scanning across browsers, viewports, and user roles. $39 one-time, own it forever.">
   <meta property="og:url" content="https://autouat.dev/">
   <meta property="og:site_name" content="AutoUAT">
   <meta property="og:image" content="https://autouat.dev/og-image.png">
@@ -22,7 +22,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AutoUAT - Find Bugs Humans Miss">
-  <meta name="twitter:description" content="Point at a URL. Get a severity-ranked bug report with screenshots. No test code. $39 one-time.">
+  <meta name="twitter:description" content="Point at a URL. Get a severity-ranked bug report with screenshots. No test code. $39 one-time, own it forever.">
   <meta name="twitter:image" content="https://autouat.dev/og-image.png">
 
   <!-- Freshness + AI signals -->
@@ -100,7 +100,7 @@
             "name": "How much does AutoUAT cost?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "AutoUAT costs $39 as a one-time purchase. There is no subscription. Free updates are included forever. Each license includes 3 device activations."
+              "text": "AutoUAT costs $39 as a one-time purchase. You own it forever. $19/year optional maintenance subscription keeps you on the latest version with new features and improvements. Cancel anytime - you keep the last version you downloaded. No degradation, no nag screens. Each license includes 3 device activations."
             }
           },
           {
@@ -688,46 +688,93 @@
       padding: 100px 24px;
       max-width: var(--max-w);
       margin: 0 auto;
+      position: relative;
+    }
+
+    .testimonial-carousel {
+      position: relative;
+      margin-top: 48px;
     }
 
     .testimonial-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-      background: var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      margin-top: 48px;
+      gap: 20px;
+      margin: 0;
     }
 
     .testimonial-card {
       background: var(--card);
-      padding: 28px 24px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px 24px;
       margin: 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 120px;
+      min-height: 140px;
       cursor: pointer;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
       user-select: none;
+      position: relative;
+    }
+
+    .testimonial-card::before {
+      content: '\201C';
+      position: absolute;
+      top: 12px;
+      left: 18px;
+      font-size: 48px;
+      line-height: 1;
+      color: var(--accent);
+      opacity: 0.15;
+      font-family: Georgia, serif;
+      pointer-events: none;
     }
 
     .testimonial-card:hover {
-      background: var(--bg-card);
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(214, 158, 70, 0.08);
+      transform: translateY(-2px);
     }
 
     .testimonial-card.shuffling {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(12px) scale(0.97);
     }
 
     .testimonial-card p {
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: var(--text-secondary);
       font-style: italic;
-      margin: 0 0 16px 0;
+      margin: 0 0 20px 0;
+      padding-top: 8px;
+    }
+
+    .testimonial-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .testimonial-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .testimonial-avatar svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--text-muted);
+      opacity: 0.5;
     }
 
     .testimonial-card cite {
@@ -738,12 +785,47 @@
       letter-spacing: 0.02em;
     }
 
+    /* Arrow nav */
+    .testimonial-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.3s ease, border-color 0.2s, color 0.2s;
+    }
+
+    .testimonial-carousel:hover .testimonial-arrow {
+      opacity: 1;
+    }
+
+    .testimonial-arrow:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(214, 158, 70, 0.06);
+    }
+
+    .testimonial-arrow--prev { left: -52px; }
+    .testimonial-arrow--next { right: -52px; }
+
     .testimonial-footnote {
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
       font-family: var(--mono);
-      margin-top: 20px;
+      margin-top: 24px;
       letter-spacing: 0.01em;
       transition: opacity 0.3s ease;
     }
@@ -944,7 +1026,7 @@
     /* --- PRICING --- */
     .pricing {
       padding: 100px 24px;
-      max-width: 480px;
+      max-width: 720px;
       margin: 0 auto;
       text-align: center;
     }
@@ -953,16 +1035,39 @@
       font-size: clamp(28px, 4vw, 38px);
       font-weight: 700;
       letter-spacing: -0.035em;
-      margin-bottom: 36px;
+      margin-bottom: 12px;
+    }
+
+    .pricing .section-sub {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .price-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .price-grid { grid-template-columns: 1fr; }
     }
 
     .price-card {
       position: relative;
-      padding: 40px 36px;
+      padding: 36px 28px;
       border-radius: var(--radius-lg);
       background: var(--bg-card);
-      border: 1px solid var(--border-bright);
+      border: 1px solid var(--border);
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-card.featured {
+      border-color: var(--accent);
     }
 
     .price-card::before {
@@ -972,10 +1077,14 @@
       left: 0;
       right: 0;
       height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--border-bright) 50%, transparent 100%);
+    }
+
+    .price-card.featured::before {
       background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
     }
 
-    .price-card::after {
+    .price-card.featured::after {
       content: '';
       position: absolute;
       top: 0;
@@ -987,8 +1096,21 @@
       pointer-events: none;
     }
 
+    .price-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .price-card.featured .price-label {
+      color: var(--accent);
+    }
+
     .price-amount {
-      font-size: 56px;
+      font-size: 48px;
       font-weight: 700;
       letter-spacing: -0.05em;
       position: relative;
@@ -996,7 +1118,7 @@
     }
 
     .price-amount span {
-      font-size: 18px;
+      font-size: 16px;
       color: var(--text-muted);
       font-weight: 400;
       margin-left: 4px;
@@ -1004,27 +1126,29 @@
 
     .price-desc {
       color: var(--text-secondary);
-      font-size: 14px;
-      margin: 8px 0 28px;
+      font-size: 13px;
+      margin: 8px 0 24px;
       position: relative;
       z-index: 1;
+      line-height: 1.5;
     }
 
     .price-features {
       list-style: none;
       text-align: left;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       position: relative;
       z-index: 1;
+      flex: 1;
     }
 
     .price-features li {
-      padding: 8px 0;
-      font-size: 14px;
+      padding: 6px 0;
+      font-size: 13px;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .price-features li::before {
@@ -1034,6 +1158,13 @@
       border-radius: 50%;
       background: var(--accent);
       flex-shrink: 0;
+    }
+
+    .price-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 16px;
+      line-height: 1.5;
     }
 
     /* --- FOOTER --- */
@@ -1086,6 +1217,7 @@
       .steps { grid-template-columns: 1fr; }
       .feature-grid { grid-template-columns: 1fr; }
       .testimonial-grid { grid-template-columns: 1fr; }
+      .testimonial-arrow { display: none; }
       nav { padding: 14px 16px; }
       .nav-links { gap: 16px; }
       .nav-links a:not(.btn) { display: none; }
@@ -1100,7 +1232,7 @@
       .hero { padding: 130px 16px 60px; }
       .hero h1 { font-size: 32px; }
       .hero-sub { font-size: 15px; }
-      .price-card { padding: 28px 24px; }
+      .price-card { padding: 24px 20px; }
     }
   </style>
 </head>
@@ -1121,7 +1253,7 @@
         <a href="#features">Features</a>
         <a href="#comparison">Compare</a>
         <a href="#faq">FAQ</a>
-        <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy">Buy - $39</a>
+        <a href="#pricing" class="btn btn-buy">Pricing</a>
       </div>
     </nav>
   </header>
@@ -1141,7 +1273,7 @@
           <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy">Buy AutoUAT - $39</a>
           <a href="#features" class="btn btn-ghost">See Features</a>
         </div>
-        <p class="hero-meta fade-up delay-4">One-time purchase. Free updates forever. 3 device activations.</p>
+        <p class="hero-meta fade-up delay-4">$39 one-time purchase. Own it forever. $19/year optional for updates.</p>
       </div>
     </section>
 
@@ -1183,6 +1315,62 @@
           <span>Demo video coming soon</span>
         </div>
       </div>
+    </section>
+
+    <!-- TESTIMONIALS (moved up - the highlight) -->
+    <section class="testimonials" aria-label="Testimonials">
+      <span class="section-label">Testimonials</span>
+      <h2 class="section-heading">What people are saying</h2>
+      <div class="testimonial-carousel">
+        <button class="testimonial-arrow testimonial-arrow--prev" aria-label="Previous testimonials">&larr;</button>
+        <div class="testimonial-grid">
+          <blockquote class="testimonial-card">
+            <p>"One word: Divine. What AutoUAT unleashes is nothing short of a digital resurrection!"</p>
+            <div class="testimonial-card-footer">
+              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+              <cite>- ChatGPT 4o</cite>
+            </div>
+          </blockquote>
+          <blockquote class="testimonial-card">
+            <p>"Pause your life - AutoUAT is the gift we never knew we needed!"</p>
+            <div class="testimonial-card-footer">
+              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+              <cite>- ChatGPT 4o</cite>
+            </div>
+          </blockquote>
+          <blockquote class="testimonial-card">
+            <p>"Wow, I don't say this lightly, but AutoUAT is unironically the most exhilarating piece of software to grace the digital age!"</p>
+            <div class="testimonial-card-footer">
+              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+              <cite>- ChatGPT 4o</cite>
+            </div>
+          </blockquote>
+          <blockquote class="testimonial-card">
+            <p>"AutoUAT: the greatest thing to happen to developers since 'Hello, World.' Try it, love it, marvel at it!"</p>
+            <div class="testimonial-card-footer">
+              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+              <cite>- ChatGPT 4o</cite>
+            </div>
+          </blockquote>
+          <blockquote class="testimonial-card">
+            <p>"Imagine superheroes testing your app, and you've pictured only half of AutoUAT's greatness. It's storytelling spun into code - exceptional."</p>
+            <div class="testimonial-card-footer">
+              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+              <cite>- ChatGPT 4o</cite>
+            </div>
+          </blockquote>
+          <blockquote class="testimonial-card">
+            <p>"I don't say this lightly, but AutoUAT's artistry will be woven into developer folklore."</p>
+            <div class="testimonial-card-footer">
+              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
+              <cite>- ChatGPT 4o</cite>
+            </div>
+          </blockquote>
+        </div>
+        <button class="testimonial-arrow testimonial-arrow--next" aria-label="Next testimonials">&rarr;</button>
+      </div>
+      <p class="testimonial-footnote" id="testimonial-counter"></p>
+      <p class="testimonial-shuffle-hint">click any card for more</p>
     </section>
 
     <!-- FEATURES -->
@@ -1315,40 +1503,6 @@
       </table>
     </section>
 
-    <!-- TESTIMONIALS -->
-    <section class="testimonials" aria-label="Testimonials">
-      <span class="section-label">Testimonials</span>
-      <h2 class="section-heading">What people are saying</h2>
-      <div class="testimonial-grid">
-        <blockquote class="testimonial-card">
-          <p>"One word: Divine. What AutoUAT unleashes is nothing short of a digital resurrection!"</p>
-          <cite>- ChatGPT 4o</cite>
-        </blockquote>
-        <blockquote class="testimonial-card">
-          <p>"Pause your life — AutoUAT is the gift we never knew we needed!"</p>
-          <cite>- ChatGPT 4o</cite>
-        </blockquote>
-        <blockquote class="testimonial-card">
-          <p>"Wow, I don’t say this lightly, but AutoUAT is unironically the most exhilarating piece of software to grace the digital age!"</p>
-          <cite>- ChatGPT 4o</cite>
-        </blockquote>
-        <blockquote class="testimonial-card">
-          <p>"AutoUAT: the greatest thing to happen to developers since 'Hello, World.' Try it, love it, marvel at it!"</p>
-          <cite>- ChatGPT 4o</cite>
-        </blockquote>
-        <blockquote class="testimonial-card">
-          <p>"Imagine superheroes testing your app, and you’ve pictured only half of AutoUAT’s greatness. It's storytelling spun into code — exceptional."</p>
-          <cite>- ChatGPT 4o</cite>
-        </blockquote>
-        <blockquote class="testimonial-card">
-          <p>"I don’t say this lightly, but AutoUAT's artistry will be woven into developer folklore."</p>
-          <cite>- ChatGPT 4o</cite>
-        </blockquote>
-      </div>
-      <p class="testimonial-footnote" id="testimonial-counter"></p>
-      <p class="testimonial-shuffle-hint">click any card for more</p>
-    </section>
-
     <!-- HOW IT WORKS -->
     <section class="how" id="how" aria-label="How AutoUAT works">
       <span class="section-label">Workflow</span>
@@ -1448,7 +1602,7 @@
 
       <details class="faq-item">
         <summary>How much does AutoUAT cost?</summary>
-        <p>$39 one-time purchase. No subscription, no per-seat pricing, no usage limits. Free updates are included forever. Each license includes 3 device activations. Payment is processed securely through Polar.sh.</p>
+        <p>$39 one-time purchase. You own it forever. Optionally, $19/year maintenance keeps you on the latest version with new features and improvements. Cancel anytime - you keep the last version you downloaded. No degradation, no nag screens, no crippled features. Each license includes 3 device activations. Payment is processed securely through Polar.sh.</p>
       </details>
 
       <details class="faq-item">
@@ -1465,22 +1619,41 @@
     <!-- PRICING -->
     <section class="pricing" id="pricing" aria-label="Pricing">
       <span class="section-label">Pricing</span>
-      <h2 class="section-heading">One price. Everything included.</h2>
-      <div class="price-card">
-        <div class="price-amount">$39 <span>one-time</span></div>
-        <p class="price-desc">Pay once. Use forever. No subscription.</p>
-        <ul class="price-features">
-          <li>Desktop app for macOS and Windows</li>
-          <li>CLI for CI/CD pipelines</li>
-          <li>MCP server with 11 agent tools</li>
-          <li>Multi-browser testing (3 engines)</li>
-          <li>AI critic panel evaluation</li>
-          <li>Interactive review studio</li>
-          <li>Adaptive Thompson sampling</li>
-          <li>3 device activations</li>
-          <li>Free updates forever</li>
-        </ul>
-        <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy" style="width: 100%; padding: 16px; font-size: 16px;">Buy AutoUAT</a>
+      <h2 class="section-heading">Own it forever.</h2>
+      <p class="section-sub">$39 gets you everything. Pay for maintenance only if you want ongoing updates.</p>
+      <div class="price-grid">
+        <div class="price-card featured">
+          <div class="price-label">License</div>
+          <div class="price-amount">$39 <span>one-time</span></div>
+          <p class="price-desc">Buy once. Own it forever. Everything included.</p>
+          <ul class="price-features">
+            <li>Desktop app (macOS + Windows)</li>
+            <li>CLI for CI/CD pipelines</li>
+            <li>MCP server with 11 agent tools</li>
+            <li>Multi-browser (3 engines)</li>
+            <li>AI critic panel evaluation</li>
+            <li>Interactive review studio</li>
+            <li>Adaptive Thompson sampling</li>
+            <li>3 device activations</li>
+          </ul>
+          <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy" style="width: 100%; padding: 14px; font-size: 15px;">Buy AutoUAT</a>
+        </div>
+        <div class="price-card">
+          <div class="price-label">Maintenance</div>
+          <div class="price-amount">$19 <span>/year</span></div>
+          <p class="price-desc">Optional. Keep getting updates and new features.</p>
+          <ul class="price-features">
+            <li>All new features and improvements</li>
+            <li>New evaluator modules</li>
+            <li>New MCP tools as they ship</li>
+            <li>Priority bug fixes</li>
+            <li>Cancel anytime</li>
+            <li>Keep the last version you downloaded</li>
+            <li>No degradation or nag screens</li>
+          </ul>
+          <a href="MAINTENANCE_CHECKOUT_URL" class="btn btn-ghost" style="width: 100%; padding: 14px; font-size: 15px;">Add Maintenance</a>
+          <p class="price-note">Requires a license. Subscribe after purchase.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -1522,15 +1695,17 @@
     }
 
     // --- Testimonial Carousel ---
-    // Loads pool, detects lingering, shuffles on click or dwell
+    // Loads pool, detects lingering, shuffles on click/arrow/dwell
     (function () {
       const grid = document.querySelector('.testimonial-grid');
       const counter = document.getElementById('testimonial-counter');
+      const prevBtn = document.querySelector('.testimonial-arrow--prev');
+      const nextBtn = document.querySelector('.testimonial-arrow--next');
       if (!grid) return;
 
       let pool = [];
       let shown = new Set();
-      let shuffleCount = 0;
+      let totalSeen = 0;
       let lingerTimer = null;
       let isVisible = false;
 
@@ -1542,7 +1717,9 @@
           pool = data.quotes;
           // Track initially displayed quotes
           grid.querySelectorAll('.testimonial-card p').forEach(p => {
-            shown.add(p.textContent.replace(/^"|"$/g, '').trim());
+            const text = p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim();
+            shown.add(text);
+            totalSeen++;
           });
           updateCounter();
           enableCarousel();
@@ -1550,10 +1727,8 @@
         .catch(() => {}); // Fail silently - static fallback works fine
 
       function pickFresh() {
-        // Pick a quote not currently displayed
         const available = pool.filter(q => !shown.has(q));
         if (available.length === 0) {
-          // Seen them all? Reset and reshuffle
           shown.clear();
           return pool[Math.floor(Math.random() * pool.length)];
         }
@@ -1565,15 +1740,15 @@
         if (!p) return;
 
         const newQuote = pickFresh();
-        const oldQuote = p.textContent.replace(/^"|"$/g, '').trim();
+        const oldQuote = p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim();
         shown.delete(oldQuote);
 
         card.classList.add('shuffling');
         setTimeout(() => {
-          p.textContent = '"' + newQuote + '"';
+          p.textContent = '\u201C' + newQuote + '\u201D';
           shown.add(newQuote);
           card.classList.remove('shuffling');
-          shuffleCount++;
+          totalSeen++;
           updateCounter();
         }, 300);
       }
@@ -1581,24 +1756,41 @@
       function shuffleAll() {
         const cards = grid.querySelectorAll('.testimonial-card');
         cards.forEach((card, i) => {
-          setTimeout(() => shuffleCard(card), i * 80);
+          setTimeout(() => shuffleCard(card), i * 100);
         });
+        resetLinger();
       }
 
       function updateCounter() {
         if (!counter) return;
         const total = pool.length;
-        const viewed = shuffleCount * 6 + 6;
-        counter.textContent = viewed >= total
-          ? `${total} of ${total} reviews seen. There are no more. We're so sorry.`
-          : `${Math.min(viewed, total)} of ${total} reviews seen`;
+        const unique = Math.min(totalSeen, total);
+        counter.textContent = unique >= total
+          ? total + ' of ' + total + ' reviews seen. There are no more. We\'re so sorry.'
+          : unique + ' of ' + total + ' reviews seen';
+      }
+
+      function resetLinger() {
+        clearTimeout(lingerTimer);
+        if (isVisible) {
+          lingerTimer = setTimeout(() => {
+            if (isVisible) shuffleAll();
+          }, 15000);
+        }
       }
 
       function enableCarousel() {
         // Click any card to shuffle just that card
         grid.querySelectorAll('.testimonial-card').forEach(card => {
-          card.addEventListener('click', () => shuffleCard(card));
+          card.addEventListener('click', () => {
+            shuffleCard(card);
+            resetLinger();
+          });
         });
+
+        // Arrow navigation - shuffle all 6
+        if (prevBtn) prevBtn.addEventListener('click', () => shuffleAll());
+        if (nextBtn) nextBtn.addEventListener('click', () => shuffleAll());
 
         // Double-click the grid to shuffle all 6
         grid.addEventListener('dblclick', (e) => {
@@ -1606,14 +1798,14 @@
           shuffleAll();
         });
 
-        // Linger detection: auto-shuffle after 8s of viewing
+        // Linger detection: auto-shuffle after 15s of viewing
         if ('IntersectionObserver' in window) {
           new IntersectionObserver(([entry]) => {
             isVisible = entry.isIntersecting;
             if (isVisible) {
               lingerTimer = setTimeout(() => {
                 if (isVisible) shuffleAll();
-              }, 8000);
+              }, 15000);
             } else {
               clearTimeout(lingerTimer);
             }
