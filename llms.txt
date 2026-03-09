@@ -1,0 +1,59 @@
+# AutoUAT
+
+> Stochastic UAT/UX optimization runner that finds bugs humans miss. Point it at any web app URL - it crawls pages, generates test scenarios using adaptive sampling, and produces severity-ranked HTML reports with inline screenshots. No test code required.
+
+## Overview
+
+AutoUAT is a desktop application, CLI tool, and MCP server for automated user acceptance testing. It uses Playwright-based browser automation combined with AI-powered evaluation to discover bugs across browsers, viewports, and user roles that manual QA consistently misses.
+
+Unlike Selenium, Cypress, or Playwright test suites, AutoUAT requires zero test code. You provide a URL. It discovers pages, generates scenarios, executes them across Chromium/Firefox/WebKit, and produces a shareable HTML report.
+
+## Key Capabilities
+
+- Zero-config URL scanning - paste a URL, get findings
+- Adaptive Thompson sampling - focuses on high-yield areas automatically
+- Multi-browser testing - Chromium, Firefox, WebKit simultaneously
+- AI critic panel - 3-persona LLM evaluation with 2-of-3 consensus
+- Deterministic evaluators - console errors, network failures, layout overflow, accessibility (axe-core), performance (LCP/CLS)
+- Interactive review studio - offline HTML report with screenshot overlays and annotations
+- MCP server with 11 tools for AI agent integration
+
+## Installation
+
+Desktop app available for macOS and Windows. CLI via npm.
+
+```
+npx autouat run --url https://example.com --scenarios 20
+```
+
+## Pricing
+
+$39 one-time purchase. No subscription. Free updates forever. 3 device activations included.
+
+Purchase: https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R
+
+## Comparison
+
+| Feature | AutoUAT | Selenium | Cypress | Playwright Test |
+|---------|---------|----------|---------|-----------------|
+| Test code required | No | Yes | Yes | Yes |
+| Auto-discovery | Yes | No | No | No |
+| AI evaluation | Yes | No | No | No |
+| Multi-browser | Yes | Yes | Limited | Yes |
+| Setup time | 2 min | Hours | 30 min | 30 min |
+| Report generation | Built-in | Manual | Manual | Manual |
+
+## Links
+
+- Website: https://autouat.dev
+- GitHub: https://github.com/hghallTAZ/autouat
+- Documentation: https://autouat.dev/#faq
+
+## Technical Stack
+
+TypeScript, Playwright, Electron v40, React 19, Zod, vitest (206 tests passing)
+
+## Publisher
+
+SIMPLYMAN LLC
+https://autouat.dev
