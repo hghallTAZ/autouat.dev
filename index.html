@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AutoUAT - Find bugs humans miss</title>
+  <meta name="description" content="Stochastic UAT/UX optimization runner. Point it at a web app, and it explores states humans skip - across browsers, viewports, and user roles.">
+  <meta property="og:title" content="AutoUAT - Find bugs humans miss">
+  <meta property="og:description" content="Point it at a web app. It finds the bugs you'd never think to check for.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://autouat.dev">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c10;
+      --bg-card: #121218;
+      --border: #28283a;
+      --text: #e8e4dc;
+      --text-secondary: #a09888;
+      --text-muted: #5c5852;
+      --accent: #d69e46;
+      --accent-hover: #e4b462;
+      --accent-dim: #a67a2e;
+      --accent-muted: rgba(214, 158, 70, 0.12);
+      --accent-glow: rgba(214, 158, 70, 0.06);
+      --font: 'DM Sans', -apple-system, sans-serif;
+      --mono: 'IBM Plex Mono', 'SF Mono', monospace;
+      --max-w: 1080px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+
+    /* --- NAV --- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(12, 12, 16, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0c0c10;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #0c0c10;
+      box-shadow: 0 4px 20px rgba(214, 158, 70, 0.3);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+    }
+    .btn-ghost:hover {
+      background: var(--accent-muted);
+    }
+
+    /* --- HERO --- */
+    .hero {
+      padding: 140px 24px 80px;
+      text-align: center;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: var(--accent-muted);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span { color: var(--accent); }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 36px;
+      line-height: 1.5;
+    }
+
+    .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .hero-price {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* --- VIDEO --- */
+    .video-section {
+      padding: 0 24px 80px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .video-wrap {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000;
+      aspect-ratio: 16/9;
+    }
+
+    .video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* --- FEATURES --- */
+    .features {
+      padding: 80px 24px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      padding: 28px;
+      border-radius: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 2px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-top-color: var(--accent-dim); }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .feature-card .tag {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--accent-muted);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-family: var(--mono);
+    }
+
+    /* --- HOW IT WORKS --- */
+    .how {
+      padding: 80px 24px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .how h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .step {
+      text-align: center;
+      padding: 32px 24px;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--accent-muted);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .step h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* --- CLI DEMO --- */
+    .cli-section {
+      padding: 0 24px 80px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .cli-section h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .cli-block {
+      background: #0a0a0e;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .cli-block .prompt { color: var(--accent); }
+    .cli-block .comment { color: var(--text-muted); }
+    .cli-block .flag { color: #7dd3fc; }
+    .cli-block .output { color: var(--text-secondary); }
+
+    /* --- PRICING --- */
+    .pricing {
+      padding: 80px 24px;
+      max-width: 480px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .pricing h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 32px;
+    }
+
+    .price-card {
+      padding: 36px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+    }
+
+    .price-amount {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .price-amount span { font-size: 18px; color: var(--text-muted); font-weight: 400; }
+
+    .price-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin: 8px 0 24px;
+    }
+
+    .price-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+
+    .price-features li {
+      padding: 6px 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .price-features li::before {
+      content: '-';
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      padding: 40px 24px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    footer a { color: var(--text-secondary); }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      .steps { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: 1fr; }
+      nav { padding: 12px 16px; }
+      .nav-links a:not(.btn) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">AutoUAT</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://github.com/hghallTAZ/autouat" target="_blank">GitHub</a>
+      <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-primary">Buy $39</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Stochastic UAT Runner</div>
+    <h1>Find bugs <span>humans miss</span></h1>
+    <p>Point it at any web app. It explores states you'd never think to check - across browsers, viewports, and user roles - then ranks what matters most.</p>
+    <div class="hero-cta">
+      <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-primary">Buy AutoUAT - $39</a>
+      <a href="https://github.com/hghallTAZ/autouat" class="btn btn-ghost" target="_blank">View on GitHub</a>
+    </div>
+    <p class="hero-price">One-time purchase. Free updates forever. 3 device activations.</p>
+  </section>
+
+  <!-- VIDEO -->
+  <section class="video-section">
+    <div class="video-wrap">
+      <!-- Replace src with your rendered video file -->
+      <video controls muted playsinline poster="">
+        <source src="autouat-hook.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <h2>What it catches</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="tag">DETERMINISTIC</div>
+        <h3>Console errors</h3>
+        <p>Catches uncaught exceptions, failed promises, and runtime errors across every scenario.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">DETERMINISTIC</div>
+        <h3>Network failures</h3>
+        <p>Flags 4xx/5xx responses, timeouts, and failed API calls with request/response context.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">DETERMINISTIC</div>
+        <h3>Layout overflow</h3>
+        <p>Detects horizontal scroll, clipped content, and responsive breakage across viewports.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">DETERMINISTIC</div>
+        <h3>Accessibility</h3>
+        <p>Axe-core snapshots catch missing labels, contrast failures, and ARIA violations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">DETERMINISTIC</div>
+        <h3>Performance</h3>
+        <p>LCP, CLS, and interaction timing measured per scenario. Flags regressions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">AI CRITIC</div>
+        <h3>UX evaluation</h3>
+        <p>3-persona LLM panel reviews each page. 2-of-3 consensus required to flag an issue.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">ADAPTIVE</div>
+        <h3>Thompson sampling</h3>
+        <p>Learns which regions of your app yield findings and shifts focus there automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">MULTI-BROWSER</div>
+        <h3>Cross-browser testing</h3>
+        <p>Chromium, Firefox, and WebKit. Finds browser-specific rendering and behavior bugs.</p>
+      </div>
+      <div class="feature-card">
+        <div class="tag">REPORTS</div>
+        <h3>Interactive review studio</h3>
+        <p>Offline HTML report with screenshot overlays, annotations, and a synthesis brief for stakeholders.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Paste a URL</h3>
+        <p>Point AutoUAT at your web app. It crawls same-origin pages and discovers structure automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Set scenarios</h3>
+        <p>Choose how many scenarios to run. The sampler generates diverse test paths across pages, viewports, and roles.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Review findings</h3>
+        <p>Get a prioritized report with screenshots, reproduction steps, and severity scores. Share the single HTML file with your team.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLI DEMO -->
+  <section class="cli-section">
+    <h2>Works from the CLI too</h2>
+    <div class="cli-block">
+      <span class="prompt">$</span> npx autouat run <span class="flag">--url</span> https://myapp.com <span class="flag">--scenarios</span> 30<br>
+      <br>
+      <span class="output">  Discovering pages... 12 found</span><br>
+      <span class="output">  Generating scenarios... 30 created</span><br>
+      <span class="output">  Running across Chromium, Firefox, WebKit...</span><br>
+      <br>
+      <span class="output">  ==============================</span><br>
+      <span class="output">  RESULTS: 30 scenarios, 8 findings</span><br>
+      <span class="output">  ==============================</span><br>
+      <span class="output">  CRITICAL  2  console errors, missing error boundary</span><br>
+      <span class="output">  HIGH      3  layout overflow at 375px, 768px</span><br>
+      <span class="output">  MEDIUM    2  accessibility: missing alt, low contrast</span><br>
+      <span class="output">  LOW       1  performance: LCP 4.2s on /dashboard</span><br>
+      <br>
+      <span class="output">  Report: ./artifacts/report.html</span><br>
+      <span class="output">  Studio: ./artifacts/review-studio.html</span><br>
+    </div>
+  </section>
+
+  <!-- FULL DEMO VIDEO -->
+  <section class="video-section">
+    <div class="video-wrap">
+      <!-- Replace src with your rendered demo video -->
+      <video controls muted playsinline poster="">
+        <source src="autouat-demo.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <h2>Simple pricing</h2>
+    <div class="price-card">
+      <div class="price-amount">$39 <span>one-time</span></div>
+      <p class="price-desc">Pay once. Use forever. Free updates included.</p>
+      <ul class="price-features">
+        <li>Desktop app (macOS + Windows)</li>
+        <li>CLI for CI/CD integration</li>
+        <li>Multi-browser testing</li>
+        <li>AI critic panel</li>
+        <li>Interactive review studio</li>
+        <li>3 device activations</li>
+        <li>Free updates forever</li>
+      </ul>
+      <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 16px;">Buy AutoUAT</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>AutoUAT by <a href="https://github.com/hghallTAZ">SIMPLYMAN LLC</a>. Built with Playwright, TypeScript, and spite for manual QA.</p>
+  </footer>
+
+</body>
+</html>
