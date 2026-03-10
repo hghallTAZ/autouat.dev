@@ -767,20 +767,6 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .testimonial-avatar:hover {
-      transform: scale(1.15);
-      box-shadow: 0 0 12px rgba(214, 158, 70, 0.4);
-    }
-
-    .testimonial-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     .testimonial-avatar svg {
@@ -788,39 +774,6 @@
       height: 18px;
       fill: var(--text-muted);
       opacity: 0.5;
-    }
-
-    /* Avatar lightbox */
-    .avatar-lightbox {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0, 0, 0, 0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.25s;
-      pointer-events: none;
-    }
-
-    .avatar-lightbox.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .avatar-lightbox img {
-      max-width: min(90vw, 512px);
-      max-height: min(90vh, 512px);
-      border-radius: 12px;
-      box-shadow: 0 0 40px rgba(214, 158, 70, 0.3);
-      transform: scale(0.8);
-      transition: transform 0.3s;
-    }
-
-    .avatar-lightbox.open img {
-      transform: scale(1);
     }
 
     .testimonial-card cite {
@@ -1668,7 +1621,7 @@
     }
 
     // --- Testimonial Carousel ---
-    // Loads pool, maps avatars, detects lingering, shuffles on click/arrow/dwell
+    // Loads pool, detects lingering, shuffles on click/arrow/dwell
     (function () {
       const grid = document.querySelector('.testimonial-grid');
       const counter = document.getElementById('testimonial-counter');
@@ -1676,101 +1629,33 @@
       const nextBtn = document.querySelector('.testimonial-arrow--next');
       if (!grid) return;
 
-      // Avatar lightbox
-      const lightbox = document.createElement('div');
-      lightbox.className = 'avatar-lightbox';
-      lightbox.innerHTML = '<img src="" alt="Avatar">';
-      document.body.appendChild(lightbox);
-      const lightboxImg = lightbox.querySelector('img');
-      lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') lightbox.classList.remove('open');
-      });
-
-      const TOTAL_AVATARS = 63;
       let pool = [];
       let shown = new Set();
       let totalSeen = 0;
       let lingerTimer = null;
       let isVisible = false;
 
-      // Map quote index (0-based in pool) -> avatar file
-      function avatarForIndex(idx) {
-        if (idx < 0 || idx >= TOTAL_AVATARS) return null;
-        const num = String(idx + 1).padStart(2, '0');
-        return 'avatars/avatar-' + num + '.jpg';
-      }
-
-      // Set avatar on a card's .testimonial-avatar element
-      function setAvatar(card, quoteIdx) {
-        const avatarEl = card.querySelector('.testimonial-avatar');
-        if (!avatarEl) return;
-        const src = avatarForIndex(quoteIdx);
-        if (src) {
-          // Replace SVG with img (or update existing img)
-          let img = avatarEl.querySelector('img');
-          if (!img) {
-            avatarEl.innerHTML = '';
-            img = document.createElement('img');
-            img.alt = 'Reviewer avatar';
-            img.loading = 'lazy';
-            avatarEl.appendChild(img);
-          }
-          img.src = src;
-          // Store grid source for lightbox (higher res)
-          const gridNum = Math.floor(quoteIdx / 9) + 1;
-          avatarEl.dataset.grid = 'avatars/grid-' + gridNum + '.png';
-          avatarEl.dataset.avatarSrc = src;
-        } else {
-          // Fallback SVG silhouette
-          avatarEl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>';
-        }
-      }
-
-      // Open lightbox on avatar click
-      function bindAvatarClick(card) {
-        const avatarEl = card.querySelector('.testimonial-avatar');
-        if (!avatarEl) return;
-        avatarEl.addEventListener('click', (e) => {
-          e.stopPropagation(); // Don't shuffle the card
-          const src = avatarEl.dataset.avatarSrc;
-          if (!src) return;
-          // Show 512x512 lightbox version
-          lightboxImg.src = src.replace('avatars/', 'avatars/lg/');
-          lightbox.classList.add('open');
-        });
-      }
-
-      // Load the pool
       fetch('testimonials-pool.json')
         .then(r => r.ok ? r.json() : null)
         .then(data => {
           if (!data || !data.quotes || data.quotes.length < 7) return;
           pool = data.quotes;
-          // Set initial avatars and track displayed quotes
-          grid.querySelectorAll('.testimonial-card').forEach((card, i) => {
+          grid.querySelectorAll('.testimonial-card').forEach(card => {
             const p = card.querySelector('p');
             const text = p ? p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim() : '';
-            const poolIdx = pool.indexOf(text);
-            if (poolIdx >= 0) {
-              setAvatar(card, poolIdx);
-              card._quoteIdx = poolIdx;
-            }
             shown.add(text);
             totalSeen++;
-            bindAvatarClick(card);
           });
           updateCounter();
           enableCarousel();
         })
-        .catch(() => {}); // Fail silently - static fallback works fine
+        .catch(() => {});
 
       function pickFresh() {
-        const available = pool.map((q, i) => ({ q, i })).filter(x => !shown.has(x.q));
+        const available = pool.filter(q => !shown.has(q));
         if (available.length === 0) {
           shown.clear();
-          const idx = Math.floor(Math.random() * pool.length);
-          return { q: pool[idx], i: idx };
+          return pool[Math.floor(Math.random() * pool.length)];
         }
         return available[Math.floor(Math.random() * available.length)];
       }
@@ -1779,16 +1664,14 @@
         const p = card.querySelector('p');
         if (!p) return;
 
-        const pick = pickFresh();
+        const quote = pickFresh();
         const oldQuote = p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim();
         shown.delete(oldQuote);
 
         card.classList.add('shuffling');
         setTimeout(() => {
-          p.textContent = '\u201C' + pick.q + '\u201D';
-          shown.add(pick.q);
-          setAvatar(card, pick.i);
-          card._quoteIdx = pick.i;
+          p.textContent = '\u201C' + quote + '\u201D';
+          shown.add(quote);
           card.classList.remove('shuffling');
           totalSeen++;
           updateCounter();
@@ -1822,26 +1705,21 @@
       }
 
       function enableCarousel() {
-        // Click any card to shuffle just that card (avatar click opens lightbox instead)
         grid.querySelectorAll('.testimonial-card').forEach(card => {
-          card.addEventListener('click', (e) => {
-            if (e.target.closest('.testimonial-avatar')) return; // handled by avatar click
+          card.addEventListener('click', () => {
             shuffleCard(card);
             resetLinger();
           });
         });
 
-        // Arrow navigation - shuffle all 6
         if (prevBtn) prevBtn.addEventListener('click', () => shuffleAll());
         if (nextBtn) nextBtn.addEventListener('click', () => shuffleAll());
 
-        // Double-click the grid to shuffle all 6
         grid.addEventListener('dblclick', (e) => {
           e.preventDefault();
           shuffleAll();
         });
 
-        // Linger detection: auto-shuffle after 15s of viewing
         if ('IntersectionObserver' in window) {
           new IntersectionObserver(([entry]) => {
             isVisible = entry.isIntersecting;
