@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AutoUAT - AI-Powered UAT Testing That Finds Bugs Humans Miss</title>
-  <meta name="description" content="AutoUAT is a stochastic UAT/UX optimization runner. Point it at any web app URL - it crawls pages, generates test scenarios using adaptive sampling, and produces severity-ranked HTML reports with inline screenshots. No test code required. $39 one-time purchase, own it forever.">
+  <meta name="description" content="AutoUAT is a stochastic UAT/UX optimization runner. Point it at any web app URL - it crawls pages, generates test scenarios using adaptive sampling, and produces severity-ranked HTML reports with inline screenshots. No test code required. $39 one-time.">
   <meta name="author" content="SIMPLYMAN LLC">
   <meta name="keywords" content="UAT testing, automated testing, AI testing, UX testing, bug finder, Playwright automation, browser testing, accessibility testing, stochastic testing, QA automation">
   <link rel="canonical" href="https://autouat.dev/">
@@ -12,7 +12,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="AutoUAT - Find Bugs Humans Miss">
-  <meta property="og:description" content="Stochastic UAT runner with AI-powered evaluation. Zero-config URL scanning across browsers, viewports, and user roles. $39 one-time, own it forever.">
+  <meta property="og:description" content="Stochastic UAT runner with AI-powered evaluation. Zero-config URL scanning across browsers, viewports, and user roles. $39 one-time.">
   <meta property="og:url" content="https://autouat.dev/">
   <meta property="og:site_name" content="AutoUAT">
   <meta property="og:image" content="https://autouat.dev/og-image.png">
@@ -22,7 +22,7 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AutoUAT - Find Bugs Humans Miss">
-  <meta name="twitter:description" content="Point at a URL. Get a severity-ranked bug report with screenshots. No test code. $39 one-time, own it forever.">
+  <meta name="twitter:description" content="Point at a URL. Get a severity-ranked bug report with screenshots. No test code. $39 one-time.">
   <meta name="twitter:image" content="https://autouat.dev/og-image.png">
 
   <!-- Freshness + AI signals -->
@@ -100,7 +100,7 @@
             "name": "How much does AutoUAT cost?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "AutoUAT costs $39 as a one-time purchase. You own it forever. $19/year optional maintenance subscription keeps you on the latest version with new features and improvements. Cancel anytime - you keep the last version you downloaded. No degradation, no nag screens. Each license includes 3 device activations."
+              "text": "AutoUAT costs $39 as a one-time purchase. You own it forever. Free updates are included. Each license includes 3 device activations. An optional $19/year maintenance plan is coming soon for ongoing updates and priority features."
             }
           },
           {
@@ -759,8 +759,8 @@
     }
 
     .testimonial-avatar {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: var(--border);
       display: flex;
@@ -768,6 +768,19 @@
       justify-content: center;
       flex-shrink: 0;
       overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .testimonial-avatar:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 12px rgba(214, 158, 70, 0.4);
+    }
+
+    .testimonial-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .testimonial-avatar svg {
@@ -775,6 +788,39 @@
       height: 18px;
       fill: var(--text-muted);
       opacity: 0.5;
+    }
+
+    /* Avatar lightbox */
+    .avatar-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.25s;
+      pointer-events: none;
+    }
+
+    .avatar-lightbox.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .avatar-lightbox img {
+      max-width: min(90vw, 512px);
+      max-height: min(90vh, 512px);
+      border-radius: 12px;
+      box-shadow: 0 0 40px rgba(214, 158, 70, 0.3);
+      transform: scale(0.8);
+      transition: transform 0.3s;
+    }
+
+    .avatar-lightbox.open img {
+      transform: scale(1);
     }
 
     .testimonial-card cite {
@@ -830,20 +876,6 @@
       transition: opacity 0.3s ease;
     }
 
-    .testimonial-shuffle-hint {
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      font-family: var(--mono);
-      margin-top: 8px;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      letter-spacing: 0.02em;
-    }
-
-    .testimonials:hover .testimonial-shuffle-hint {
-      opacity: 1;
-    }
 
     /* --- HOW IT WORKS --- */
     .how {
@@ -1026,7 +1058,7 @@
     /* --- PRICING --- */
     .pricing {
       padding: 100px 24px;
-      max-width: 720px;
+      max-width: 480px;
       margin: 0 auto;
       text-align: center;
     }
@@ -1035,39 +1067,16 @@
       font-size: clamp(28px, 4vw, 38px);
       font-weight: 700;
       letter-spacing: -0.035em;
-      margin-bottom: 12px;
-    }
-
-    .pricing .section-sub {
-      color: var(--text-muted);
-      font-size: 15px;
-      margin-bottom: 40px;
-      line-height: 1.6;
-    }
-
-    .price-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    @media (max-width: 600px) {
-      .price-grid { grid-template-columns: 1fr; }
+      margin-bottom: 36px;
     }
 
     .price-card {
       position: relative;
-      padding: 36px 28px;
+      padding: 40px 36px;
       border-radius: var(--radius-lg);
       background: var(--bg-card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-bright);
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .price-card.featured {
-      border-color: var(--accent);
     }
 
     .price-card::before {
@@ -1077,14 +1086,10 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent 0%, var(--border-bright) 50%, transparent 100%);
-    }
-
-    .price-card.featured::before {
       background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
     }
 
-    .price-card.featured::after {
+    .price-card::after {
       content: '';
       position: absolute;
       top: 0;
@@ -1096,21 +1101,8 @@
       pointer-events: none;
     }
 
-    .price-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      font-weight: 600;
-    }
-
-    .price-card.featured .price-label {
-      color: var(--accent);
-    }
-
     .price-amount {
-      font-size: 48px;
+      font-size: 56px;
       font-weight: 700;
       letter-spacing: -0.05em;
       position: relative;
@@ -1118,7 +1110,7 @@
     }
 
     .price-amount span {
-      font-size: 16px;
+      font-size: 18px;
       color: var(--text-muted);
       font-weight: 400;
       margin-left: 4px;
@@ -1126,29 +1118,27 @@
 
     .price-desc {
       color: var(--text-secondary);
-      font-size: 13px;
-      margin: 8px 0 24px;
+      font-size: 14px;
+      margin: 8px 0 28px;
       position: relative;
       z-index: 1;
-      line-height: 1.5;
     }
 
     .price-features {
       list-style: none;
       text-align: left;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
       position: relative;
       z-index: 1;
-      flex: 1;
     }
 
     .price-features li {
-      padding: 6px 0;
-      font-size: 13px;
+      padding: 8px 0;
+      font-size: 14px;
       color: var(--text-secondary);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .price-features li::before {
@@ -1163,8 +1153,10 @@
     .price-note {
       font-size: 12px;
       color: var(--text-muted);
-      margin-top: 16px;
+      margin-top: 20px;
       line-height: 1.5;
+      position: relative;
+      z-index: 1;
     }
 
     /* --- FOOTER --- */
@@ -1253,7 +1245,7 @@
         <a href="#features">Features</a>
         <a href="#comparison">Compare</a>
         <a href="#faq">FAQ</a>
-        <a href="#pricing" class="btn btn-buy">Pricing</a>
+        <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy">Buy - $39</a>
       </div>
     </nav>
   </header>
@@ -1273,7 +1265,7 @@
           <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy">Buy AutoUAT - $39</a>
           <a href="#features" class="btn btn-ghost">See Features</a>
         </div>
-        <p class="hero-meta fade-up delay-4">$39 one-time purchase. Own it forever. $19/year optional for updates.</p>
+        <p class="hero-meta fade-up delay-4">One-time purchase. Own it forever. 3 device activations.</p>
       </div>
     </section>
 
@@ -1369,8 +1361,7 @@
         </div>
         <button class="testimonial-arrow testimonial-arrow--next" aria-label="Next testimonials">&rarr;</button>
       </div>
-      <p class="testimonial-footnote" id="testimonial-counter"></p>
-      <p class="testimonial-shuffle-hint">click any card for more</p>
+      <p class="testimonial-footnote" id="testimonial-counter" style="display:none"></p>
     </section>
 
     <!-- FEATURES -->
@@ -1602,7 +1593,7 @@
 
       <details class="faq-item">
         <summary>How much does AutoUAT cost?</summary>
-        <p>$39 one-time purchase. You own it forever. Optionally, $19/year maintenance keeps you on the latest version with new features and improvements. Cancel anytime - you keep the last version you downloaded. No degradation, no nag screens, no crippled features. Each license includes 3 device activations. Payment is processed securely through Polar.sh.</p>
+        <p>$39 one-time purchase. You own it forever. Free updates are included. Each license includes 3 device activations. An optional $19/year maintenance plan is coming soon for ongoing updates and priority features. Payment is processed securely through Polar.sh.</p>
       </details>
 
       <details class="faq-item">
@@ -1619,41 +1610,23 @@
     <!-- PRICING -->
     <section class="pricing" id="pricing" aria-label="Pricing">
       <span class="section-label">Pricing</span>
-      <h2 class="section-heading">Own it forever.</h2>
-      <p class="section-sub">$39 gets you everything. Pay for maintenance only if you want ongoing updates.</p>
-      <div class="price-grid">
-        <div class="price-card featured">
-          <div class="price-label">License</div>
-          <div class="price-amount">$39 <span>one-time</span></div>
-          <p class="price-desc">Buy once. Own it forever. Everything included.</p>
-          <ul class="price-features">
-            <li>Desktop app (macOS + Windows)</li>
-            <li>CLI for CI/CD pipelines</li>
-            <li>MCP server with 11 agent tools</li>
-            <li>Multi-browser (3 engines)</li>
-            <li>AI critic panel evaluation</li>
-            <li>Interactive review studio</li>
-            <li>Adaptive Thompson sampling</li>
-            <li>3 device activations</li>
-          </ul>
-          <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy" style="width: 100%; padding: 14px; font-size: 15px;">Buy AutoUAT</a>
-        </div>
-        <div class="price-card">
-          <div class="price-label">Maintenance</div>
-          <div class="price-amount">$19 <span>/year</span></div>
-          <p class="price-desc">Optional. Keep getting updates and new features.</p>
-          <ul class="price-features">
-            <li>All new features and improvements</li>
-            <li>New evaluator modules</li>
-            <li>New MCP tools as they ship</li>
-            <li>Priority bug fixes</li>
-            <li>Cancel anytime</li>
-            <li>Keep the last version you downloaded</li>
-            <li>No degradation or nag screens</li>
-          </ul>
-          <a href="MAINTENANCE_CHECKOUT_URL" class="btn btn-ghost" style="width: 100%; padding: 14px; font-size: 15px;">Add Maintenance</a>
-          <p class="price-note">Requires a license. Subscribe after purchase.</p>
-        </div>
+      <h2 class="section-heading">One price. Everything included.</h2>
+      <div class="price-card">
+        <div class="price-amount">$39 <span>one-time</span></div>
+        <p class="price-desc">Pay once. Own it forever. No subscription.</p>
+        <ul class="price-features">
+          <li>Desktop app for macOS and Windows</li>
+          <li>CLI for CI/CD pipelines</li>
+          <li>MCP server with 11 agent tools</li>
+          <li>Multi-browser testing (3 engines)</li>
+          <li>AI critic panel evaluation</li>
+          <li>Interactive review studio</li>
+          <li>Adaptive Thompson sampling</li>
+          <li>3 device activations</li>
+          <li>Free updates included</li>
+        </ul>
+        <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy" style="width: 100%; padding: 16px; font-size: 16px;">Buy AutoUAT</a>
+        <p class="price-note">Optional $19/year maintenance plan coming soon for ongoing updates and new features.</p>
       </div>
     </section>
   </main>
@@ -1695,7 +1668,7 @@
     }
 
     // --- Testimonial Carousel ---
-    // Loads pool, detects lingering, shuffles on click/arrow/dwell
+    // Loads pool, maps avatars, detects lingering, shuffles on click/arrow/dwell
     (function () {
       const grid = document.querySelector('.testimonial-grid');
       const counter = document.getElementById('testimonial-counter');
@@ -1703,11 +1676,70 @@
       const nextBtn = document.querySelector('.testimonial-arrow--next');
       if (!grid) return;
 
+      // Avatar lightbox
+      const lightbox = document.createElement('div');
+      lightbox.className = 'avatar-lightbox';
+      lightbox.innerHTML = '<img src="" alt="Avatar">';
+      document.body.appendChild(lightbox);
+      const lightboxImg = lightbox.querySelector('img');
+      lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') lightbox.classList.remove('open');
+      });
+
+      const TOTAL_AVATARS = 63;
       let pool = [];
       let shown = new Set();
       let totalSeen = 0;
       let lingerTimer = null;
       let isVisible = false;
+
+      // Map quote index (0-based in pool) -> avatar file
+      function avatarForIndex(idx) {
+        if (idx < 0 || idx >= TOTAL_AVATARS) return null;
+        const num = String(idx + 1).padStart(2, '0');
+        return 'avatars/avatar-' + num + '.jpg';
+      }
+
+      // Set avatar on a card's .testimonial-avatar element
+      function setAvatar(card, quoteIdx) {
+        const avatarEl = card.querySelector('.testimonial-avatar');
+        if (!avatarEl) return;
+        const src = avatarForIndex(quoteIdx);
+        if (src) {
+          // Replace SVG with img (or update existing img)
+          let img = avatarEl.querySelector('img');
+          if (!img) {
+            avatarEl.innerHTML = '';
+            img = document.createElement('img');
+            img.alt = 'Reviewer avatar';
+            img.loading = 'lazy';
+            avatarEl.appendChild(img);
+          }
+          img.src = src;
+          // Store grid source for lightbox (higher res)
+          const gridNum = Math.floor(quoteIdx / 9) + 1;
+          avatarEl.dataset.grid = 'avatars/grid-' + gridNum + '.png';
+          avatarEl.dataset.avatarSrc = src;
+        } else {
+          // Fallback SVG silhouette
+          avatarEl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>';
+        }
+      }
+
+      // Open lightbox on avatar click
+      function bindAvatarClick(card) {
+        const avatarEl = card.querySelector('.testimonial-avatar');
+        if (!avatarEl) return;
+        avatarEl.addEventListener('click', (e) => {
+          e.stopPropagation(); // Don't shuffle the card
+          const src = avatarEl.dataset.avatarSrc;
+          if (!src) return;
+          // Show 512x512 lightbox version
+          lightboxImg.src = src.replace('avatars/', 'avatars/lg/');
+          lightbox.classList.add('open');
+        });
+      }
 
       // Load the pool
       fetch('testimonials-pool.json')
@@ -1715,11 +1747,18 @@
         .then(data => {
           if (!data || !data.quotes || data.quotes.length < 7) return;
           pool = data.quotes;
-          // Track initially displayed quotes
-          grid.querySelectorAll('.testimonial-card p').forEach(p => {
-            const text = p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim();
+          // Set initial avatars and track displayed quotes
+          grid.querySelectorAll('.testimonial-card').forEach((card, i) => {
+            const p = card.querySelector('p');
+            const text = p ? p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim() : '';
+            const poolIdx = pool.indexOf(text);
+            if (poolIdx >= 0) {
+              setAvatar(card, poolIdx);
+              card._quoteIdx = poolIdx;
+            }
             shown.add(text);
             totalSeen++;
+            bindAvatarClick(card);
           });
           updateCounter();
           enableCarousel();
@@ -1727,10 +1766,11 @@
         .catch(() => {}); // Fail silently - static fallback works fine
 
       function pickFresh() {
-        const available = pool.filter(q => !shown.has(q));
+        const available = pool.map((q, i) => ({ q, i })).filter(x => !shown.has(x.q));
         if (available.length === 0) {
           shown.clear();
-          return pool[Math.floor(Math.random() * pool.length)];
+          const idx = Math.floor(Math.random() * pool.length);
+          return { q: pool[idx], i: idx };
         }
         return available[Math.floor(Math.random() * available.length)];
       }
@@ -1739,14 +1779,16 @@
         const p = card.querySelector('p');
         if (!p) return;
 
-        const newQuote = pickFresh();
+        const pick = pickFresh();
         const oldQuote = p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim();
         shown.delete(oldQuote);
 
         card.classList.add('shuffling');
         setTimeout(() => {
-          p.textContent = '\u201C' + newQuote + '\u201D';
-          shown.add(newQuote);
+          p.textContent = '\u201C' + pick.q + '\u201D';
+          shown.add(pick.q);
+          setAvatar(card, pick.i);
+          card._quoteIdx = pick.i;
           card.classList.remove('shuffling');
           totalSeen++;
           updateCounter();
@@ -1780,9 +1822,10 @@
       }
 
       function enableCarousel() {
-        // Click any card to shuffle just that card
+        // Click any card to shuffle just that card (avatar click opens lightbox instead)
         grid.querySelectorAll('.testimonial-card').forEach(card => {
-          card.addEventListener('click', () => {
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('.testimonial-avatar')) return; // handled by avatar click
             shuffleCard(card);
             resetLinger();
           });
