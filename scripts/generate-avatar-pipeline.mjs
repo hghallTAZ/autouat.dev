@@ -2,15 +2,15 @@
 /**
  * generate-avatar-pipeline.mjs
  *
- * 2-stage avatar generation pipeline:
- *   Stage 1: Gemini Flash 3.0 generates random person descriptions (cheap, creative)
- *   Stage 2: Nano Banana 2 generates 3x3 grids from those descriptions (2K, 1:1)
- *   Stage 3: ImageMagick slices grids into 128x128 JPGs
+ * Fully parallel avatar generation:
+ *   Stage 1: 63 independent Flash 3.0 calls generate one description each (parallel)
+ *            Each prompt perturbed with a nonsense word to prevent token-path overlap
+ *   Stage 2: 7 parallel Nano Banana 2 calls generate 3x3 grids at 2K (parallel)
+ *   Stage 3: ImageMagick slices grids into 128x128 + 512x512 JPGs
  *
  * Usage:
- *   node scripts/generate-avatar-pipeline.mjs --test        # one grid, synchronous
- *   node scripts/generate-avatar-pipeline.mjs               # all 7 grids, synchronous
- *   node scripts/generate-avatar-pipeline.mjs --batch       # all 7 grids via Batch API (50% off)
+ *   node scripts/generate-avatar-pipeline.mjs               # full parallel run
+ *   node scripts/generate-avatar-pipeline.mjs --test        # one grid (9 descriptions)
  *   node scripts/generate-avatar-pipeline.mjs --slice-only  # just re-slice existing grids
  *   node scripts/generate-avatar-pipeline.mjs --grid 3      # just grid 3
  */
@@ -23,142 +23,206 @@ import { dirname, join } from "path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE_DIR = join(__dirname, "..");
 const AVATARS_DIR = join(SITE_DIR, "avatars");
+const LG_DIR = join(AVATARS_DIR, "lg");
 
 const API_KEY =
   process.env.GEMINI_API_KEY || "AIzaSyCzegkFyH3d3eLPdv-49p7RDtPw240poXI";
 
-// Models
 const FLASH_MODEL = "gemini-3-flash-preview";
 const IMAGE_MODEL = "gemini-3.1-flash-image-preview";
+const FLASH_URL = `https://generativelanguage.googleapis.com/v1beta/models/${FLASH_MODEL}:generateContent?key=${API_KEY}`;
+const IMAGE_URL = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent?key=${API_KEY}`;
 
-const FLASH_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${FLASH_MODEL}:generateContent?key=${API_KEY}`;
-const IMAGE_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:generateContent?key=${API_KEY}`;
-const BATCH_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:batchGenerateContent?key=${API_KEY}`;
-
-// Grid config
 const COLS = 3;
 const ROWS = 3;
 const PER_GRID = COLS * ROWS; // 9
-const NUM_GRIDS = 7; // 7 x 9 = 63 avatars (56 quotes + 7 bonus)
+const NUM_GRIDS = 7; // 63 avatars
+const TOTAL = NUM_GRIDS * PER_GRID;
 
 // CLI flags
 const sliceOnly = process.argv.includes("--slice-only");
 const testMode = process.argv.includes("--test");
-const batchMode = process.argv.includes("--batch");
 const singleGrid = process.argv.includes("--grid")
   ? parseInt(process.argv[process.argv.indexOf("--grid") + 1], 10)
   : null;
 
 // ---------------------------------------------------------------------------
-// Stage 1: Flash 3.0 generates random person descriptions
+// Nonsense word generator - perturbs next-token distribution per call
 // ---------------------------------------------------------------------------
 
-const DESCRIPTION_PROMPT = `You are generating descriptions for comedic AI-generated LinkedIn headshot profile pictures. These are for a developer tool landing page with fake "testimonials" from GPT-4o.
+const SYLLABLES = [
+  "zor", "blim", "quax", "vren", "plok", "dwim", "snux", "frab", "glip",
+  "thoz", "krem", "bwel", "nyax", "spiv", "chom", "drux", "fleb", "gwon",
+  "jilt", "mork", "praz", "slib", "twex", "vung", "whelk", "xib", "yorp",
+];
 
-Generate exactly 9 WILDLY DIFFERENT person descriptions for a 3x3 grid of profile photos. Each should be 2-3 sentences max.
-
-REQUIREMENTS:
-- Mix: ~50% cursed corporate headshots (uncanny valley), ~50% unhinged LinkedIn selfie types
-- Age range: 22-65, ~40% women, widely diverse ethnicity
-- EVERY description must specify a specific EXPRESSION and BACKGROUND with easter eggs
-- Aim for 8/10 absurdity average. Nothing below 5. Some should be 10s.
-
-CORPORATE HEADSHOT TYPES (uncanny valley):
-- Too-wide smile that doesn't reach the eyes
-- Thousand-yard stare, clearly hasn't slept in 72 hours
-- Smile frozen mid-transition, photographer lied about being done
-- Impossibly smooth skin, HDR cranked to 11
-- Eyes blazing with four-espresso intensity
-- Dead eyes but enthusiastic thumbs up
-
-UNHINGED LINKEDIN SELFIE TYPES:
-- Shirtless summit pose at golden hour (definitely posts motivational quotes)
-- Duck lips selfie at conference with badge dangling
-- Gym mirror selfie in blazer over tank top
-- Cropped from group photo, someone else's shoulder/arm still in frame
-- Car selfie in parking garage, just-promoted energy
-- Hiking selfie with smartwatch notifications visible
-- Zoom screenshot cropped into headshot, virtual background glitching
-- Beach vacation photo repurposed as professional headshot, sunburn visible
-- Photo booth strip from company party, chose the "best" frame
-- Candid mid-presentation, gesturing wildly at nothing
-- Airport lounge selfie, AirPods in, performing productivity
-
-BACKGROUND EASTER EGGS (hide these):
-- Monitor showing error page or BSOD
-- Server rack LEDs
-- Motivational poster barely visible (as image, NOT text)
-- Someone else's confused face in background
-- Whiteboard with absurd flowcharts (no readable text)
-- Plant visibly on fire
-- Cat batting a loose wire
-- Someone changing a flat tire through office window
-- Poorly draped green screen over laundry pile
-- Person in shark costume in far background
-
-CRINGE ANON ACCOUNTS (MANDATORY - 2-3 per batch):
-Not everyone uses a real photo. Some of these "reviewers" have UNHINGED anonymous profile pictures:
-- Anime avatar (badly cropped waifu, or a stoic mech pilot)
-- AI-generated "sigma male" wolf/lion portrait
-- Pixelated Minecraft skin screenshot
-- Their car photographed at sunset (no person visible at all)
-- A stock photo of a handshake that they clearly just googled
-- Blurry photo of their dog wearing sunglasses
-- Screenshot of their terminal with neofetch output
-- A closeup of their mechanical keyboard, RGB blazing
-- Corporate clip art silhouette they never bothered to change
-- Their kid's drawing of them (crayon on paper, photographed)
-- Bitmoji that looks nothing like them
-- Low-res photo of a sunset with an inspirational vibe
-These should feel like real profile pictures from real anonymous internet people who definitely have opinions about developer tools.
-
-WILDCARD: For 1-2 of the remaining, invent something we didn't think of. Something unhinged. Go nuts.
-
-ONE of the 9 should be YOUR magnum opus - the single funniest, most unhinged profile picture concept you can imagine for a tech testimonial page.
-
-Output ONLY a JSON array of 9 strings. No markdown, no explanation. Just the array.
-Example: ["Description 1...", "Description 2...", ...]`;
-
-async function generateDescriptions() {
-  console.log("Stage 1: Generating person descriptions via Flash 3.0...");
-
-  const res = await fetch(FLASH_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: DESCRIPTION_PROMPT }] }],
-      generationConfig: { temperature: 2.0 },
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Flash 3.0 error ${res.status}: ${err.slice(0, 300)}`);
+function nonsenseWord() {
+  const len = 2 + Math.floor(Math.random() * 3); // 2-4 syllables
+  let word = "";
+  for (let i = 0; i < len; i++) {
+    word += SYLLABLES[Math.floor(Math.random() * SYLLABLES.length)];
   }
-
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error("No text response from Flash 3.0");
-
-  // Extract JSON array from response (may have markdown fences)
-  const jsonMatch = text.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) throw new Error(`Could not parse descriptions: ${text.slice(0, 200)}`);
-
-  const descriptions = JSON.parse(jsonMatch[0]);
-  if (!Array.isArray(descriptions) || descriptions.length !== 9) {
-    throw new Error(`Expected 9 descriptions, got ${descriptions?.length}`);
-  }
-
-  console.log(`  Got ${descriptions.length} descriptions`);
-  for (let i = 0; i < descriptions.length; i++) {
-    console.log(`  ${i + 1}. ${descriptions[i].slice(0, 80)}...`);
-  }
-
-  return descriptions;
+  return word;
 }
 
 // ---------------------------------------------------------------------------
-// Stage 2: Nano Banana 2 generates 3x3 grid image
+// Avatar type pools - each description draws from one category
+// ---------------------------------------------------------------------------
+
+const CATEGORIES = [
+  // ~40% corporate headshot (uncanny valley)
+  "CURSED CORPORATE HEADSHOT",
+  "CURSED CORPORATE HEADSHOT",
+  "CURSED CORPORATE HEADSHOT",
+  "CURSED CORPORATE HEADSHOT",
+  // ~30% unhinged LinkedIn selfie
+  "UNHINGED LINKEDIN SELFIE",
+  "UNHINGED LINKEDIN SELFIE",
+  "UNHINGED LINKEDIN SELFIE",
+  // ~30% cringe anon account
+  "CRINGE ANONYMOUS ACCOUNT",
+  "CRINGE ANONYMOUS ACCOUNT",
+];
+
+function categoryForSlot(idx) {
+  return CATEGORIES[idx % CATEGORIES.length];
+}
+
+// Explicit demographic rotation to prevent Flash from defaulting to one ethnicity
+const DEMOGRAPHICS = [
+  "a 28-year-old Black woman",
+  "a 45-year-old white man",
+  "a 33-year-old East Asian woman",
+  "a 52-year-old South Asian man",
+  "a 38-year-old Latina woman",
+  "a 60-year-old white woman",
+  "a 25-year-old Southeast Asian man",
+  "a 42-year-old Middle Eastern man",
+  "a 30-year-old Black man",
+  "a 55-year-old East Asian man",
+  "a 22-year-old white woman",
+  "a 48-year-old Nigerian woman",
+  "a 35-year-old Korean man",
+  "a 40-year-old Indigenous woman",
+  "a 58-year-old Italian man",
+  "a 27-year-old Japanese woman",
+  "a 50-year-old Polish man",
+  "a 32-year-old Brazilian woman",
+  "a 44-year-old Vietnamese man",
+  "a 36-year-old Irish woman",
+  "a 65-year-old Indian man",
+  "a 23-year-old Filipina woman",
+  "a 47-year-old German man",
+  "a 29-year-old Ethiopian woman",
+  "a 53-year-old Mexican man",
+  "a 41-year-old Scandinavian woman",
+  "a 34-year-old Thai man",
+];
+
+function demographicForSlot(idx) {
+  return DEMOGRAPHICS[idx % DEMOGRAPHICS.length];
+}
+
+// ---------------------------------------------------------------------------
+// Stage 1: One Flash call per description (fully independent)
+// ---------------------------------------------------------------------------
+
+function buildSingleDescriptionPrompt(slotIdx, category) {
+  const perturbation = nonsenseWord();
+
+  const categoryGuidance = {
+    "CURSED CORPORATE HEADSHOT": `Generate ONE cursed corporate LinkedIn headshot description. This person got a professional photo but something is deeply off:
+- Too-wide smile that doesn't reach the eyes, or thousand-yard stare from 72 hours no sleep
+- Smile frozen mid-transition, or impossibly smooth HDR skin like buffed plastic
+- Eyes blazing with four-espresso intensity, or dead eyes but enthusiastic thumbs up
+- Background easter eggs: monitor with BSOD, plant on fire, cat on server rack, someone confused in background
+- Professional setting but unsettling energy`,
+
+    "UNHINGED LINKEDIN SELFIE": `Generate ONE unhinged LinkedIn selfie description. This person chose the WORST possible photo as their professional headshot:
+- Shirtless summit pose at golden hour (posts motivational quotes daily)
+- Duck lips at a tech conference with badge dangling
+- Gym mirror selfie in blazer over tank top
+- Cropped from group photo, someone else's arm/shoulder still visible
+- Car selfie in parking garage, manic just-promoted energy
+- Beach vacation repurposed as headshot, visible sunburn
+- Zoom screenshot cropped, virtual background glitching
+- Candid mid-presentation, gesturing wildly at nothing
+- Airport lounge, AirPods in, performing productivity
+Pick ONE of these or invent something equally unhinged.`,
+
+    "CRINGE ANONYMOUS ACCOUNT": `Generate ONE cringe anonymous profile picture description. This "reviewer" doesn't use a real photo:
+- Anime avatar (badly cropped waifu, or stoic mech pilot on CRT)
+- AI-generated "sigma male" wolf or lion portrait
+- Pixelated Minecraft skin screenshot (maybe in a tuxedo)
+- Their car photographed at sunset (no person visible)
+- Blurry photo of their dog wearing sunglasses, sitting in office chair
+- Screenshot of terminal with neofetch output
+- Macro closeup of mechanical keyboard, RGB blazing
+- Kid's crayon drawing of them (on stained paper)
+- Bitmoji holding bitcoin or pizza
+- Stock photo of a handshake they clearly just googled
+Pick ONE or invent something equally absurd.`,
+  };
+
+  const demographic = demographicForSlot(slotIdx);
+  const personLine = category === "CRINGE ANONYMOUS ACCOUNT"
+    ? "" // anon accounts don't need a person
+    : `\nTHIS PERSON IS: ${demographic}. Use this EXACT demographic. Do not change it.\n`;
+
+  return `You are generating a SINGLE description for a comedic AI-generated profile picture. This is for a developer tool landing page with fake testimonials from "ChatGPT 4o."
+
+CATEGORY: ${category}
+${personLine}
+${categoryGuidance[category]}
+
+REQUIREMENTS:
+- 2-3 sentences max
+- Specify exact EXPRESSION, POSE, and BACKGROUND details
+- Include at least one hidden easter egg or absurd background detail
+- Absurdity level: 7-10 out of 10
+
+Output ONLY the description string. No quotes, no JSON, no explanation. Just the raw description text.
+
+${perturbation}`;
+}
+
+async function generateOneDescription(slotIdx, category, retries = 2) {
+  const prompt = buildSingleDescriptionPrompt(slotIdx, category);
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(FLASH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 2.0, maxOutputTokens: 256 },
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`${res.status}: ${err.slice(0, 200)}`);
+      }
+
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (!text || text.length < 20) throw new Error("Empty or too short");
+
+      // Strip quotes if Flash wrapped it
+      return text.replace(/^["']|["']$/g, "");
+    } catch (err) {
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
+        continue;
+      }
+      throw new Error(`Slot ${slotIdx} [${category}]: ${err.message}`);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Stage 2: Nano Banana 2 generates 3x3 grid
 // ---------------------------------------------------------------------------
 
 function buildGridPrompt(descriptions) {
@@ -196,10 +260,9 @@ async function generateGrid(descriptions, gridNum) {
   const prompt = buildGridPrompt(descriptions);
   const gridPath = join(AVATARS_DIR, `grid-${gridNum}.png`);
 
-  console.log(`\nStage 2: Generating 3x3 grid #${gridNum} via Nano Banana 2...`);
-  console.log(`  Prompt: ${prompt.length} chars`);
+  console.log(`  Grid ${gridNum}: sending to Nano Banana 2 (${prompt.length} chars)...`);
 
-  const res = await fetch(IMAGE_ENDPOINT, {
+  const res = await fetch(IMAGE_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -207,27 +270,23 @@ async function generateGrid(descriptions, gridNum) {
       generationConfig: {
         responseModalities: ["IMAGE"],
         temperature: 1.5,
-        imageConfig: {
-          aspectRatio: "1:1",
-          imageSize: "2K",
-        },
+        imageConfig: { aspectRatio: "1:1", imageSize: "2K" },
       },
     }),
   });
 
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Grid ${gridNum} API error ${res.status}: ${err.slice(0, 300)}`);
+    throw new Error(`Grid ${gridNum} error ${res.status}: ${err.slice(0, 300)}`);
   }
 
   const data = await res.json();
-
   for (const c of data.candidates || []) {
     for (const p of c.content?.parts || []) {
       if (p.inlineData) {
         const buf = Buffer.from(p.inlineData.data, "base64");
         writeFileSync(gridPath, buf);
-        console.log(`  Grid saved: ${gridPath} (${(buf.length / 1024).toFixed(0)}KB)`);
+        console.log(`  Grid ${gridNum} saved (${(buf.length / 1024).toFixed(0)}KB)`);
         return gridPath;
       }
     }
@@ -237,60 +296,7 @@ async function generateGrid(descriptions, gridNum) {
 }
 
 // ---------------------------------------------------------------------------
-// Stage 2b: Batch API (50% off, async)
-// ---------------------------------------------------------------------------
-
-async function submitBatch(allDescriptions) {
-  console.log(`\nSubmitting ${allDescriptions.length} grids via Batch API...`);
-
-  const requests = allDescriptions.map((descriptions, i) => ({
-    contents: [{ parts: [{ text: buildGridPrompt(descriptions) }] }],
-    generationConfig: {
-      responseModalities: ["IMAGE"],
-      temperature: 2.0,
-      imageConfig: {
-        aspectRatio: "1:1",
-        imageSize: "2K",
-      },
-    },
-  }));
-
-  const res = await fetch(BATCH_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      batch: {
-        display_name: `avatar-grids-${Date.now()}`,
-        inline_requests: requests,
-      },
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`Batch submit error ${res.status}: ${err.slice(0, 500)}`);
-  }
-
-  const data = await res.json();
-  console.log(`  Batch submitted: ${data.name || "unknown"}`);
-  console.log(`  Status: ${data.metadata?.state || "PENDING"}`);
-  console.log(`  Check status: curl "${BATCH_ENDPOINT.replace(':batchGenerateContent', '')}/${data.name}?key=${API_KEY}"`);
-
-  // Save batch info for later retrieval
-  const batchInfo = {
-    name: data.name,
-    submitted: new Date().toISOString(),
-    gridCount: allDescriptions.length,
-    descriptions: allDescriptions,
-  };
-  writeFileSync(join(AVATARS_DIR, "batch-info.json"), JSON.stringify(batchInfo, null, 2));
-  console.log(`  Batch info saved to avatars/batch-info.json`);
-
-  return data;
-}
-
-// ---------------------------------------------------------------------------
-// Stage 3: Slice grids into individual avatars
+// Stage 3: Slice grids into thumbnails + lightbox versions
 // ---------------------------------------------------------------------------
 
 function sliceGrid(gridPath, startIdx) {
@@ -304,8 +310,6 @@ function sliceGrid(gridPath, startIdx) {
   const cellW = Math.floor(gridW / COLS);
   const cellH = Math.floor(gridH / ROWS);
 
-  console.log(`  Slicing ${gridPath} (${gridW}x${gridH}, cell ${cellW}x${cellH})`);
-
   let totalSize = 0;
   let count = 0;
 
@@ -315,13 +319,20 @@ function sliceGrid(gridPath, startIdx) {
       const num = String(idx + 1).padStart(2, "0");
       const x = col * cellW;
       const y = row * cellH;
-      const outPath = join(AVATARS_DIR, `avatar-${num}.jpg`);
 
+      // 128x128 thumbnail
+      const thumbPath = join(AVATARS_DIR, `avatar-${num}.jpg`);
       execSync(
-        `magick "${gridPath}" -crop ${cellW}x${cellH}+${x}+${y} +repage -resize 128x128^ -gravity center -extent 128x128 -quality 82 "${outPath}"`
+        `magick "${gridPath}" -crop ${cellW}x${cellH}+${x}+${y} +repage -resize 128x128^ -gravity center -extent 128x128 -quality 82 "${thumbPath}"`
       );
 
-      totalSize += readFileSync(outPath).length;
+      // 512x512 lightbox
+      const lgPath = join(LG_DIR, `avatar-${num}.jpg`);
+      execSync(
+        `magick "${gridPath}" -crop ${cellW}x${cellH}+${x}+${y} +repage -resize 512x512^ -gravity center -extent 512x512 -quality 85 "${lgPath}"`
+      );
+
+      totalSize += readFileSync(thumbPath).length + readFileSync(lgPath).length;
       count++;
     }
   }
@@ -330,11 +341,12 @@ function sliceGrid(gridPath, startIdx) {
 }
 
 // ---------------------------------------------------------------------------
-// Main
+// Main - fully parallel
 // ---------------------------------------------------------------------------
 
 async function main() {
   mkdirSync(AVATARS_DIR, { recursive: true });
+  mkdirSync(LG_DIR, { recursive: true });
 
   const grids = singleGrid !== null
     ? [singleGrid]
@@ -342,55 +354,74 @@ async function main() {
       ? [1]
       : [...Array(NUM_GRIDS).keys()].map((i) => i + 1);
 
-  // Generate grids
+  const totalDescriptions = grids.length * PER_GRID;
+
   if (!sliceOnly) {
-    if (batchMode && !testMode) {
-      // Generate all descriptions first, then submit batch
-      console.log(`Generating descriptions for ${grids.length} grids...\n`);
-      const allDescriptions = [];
+    // -----------------------------------------------------------------------
+    // Stage 1: 63 independent Flash calls in parallel
+    // -----------------------------------------------------------------------
+    console.log(`Stage 1: Generating ${totalDescriptions} descriptions in parallel via Flash 3.0...`);
+    const t1 = Date.now();
 
-      for (const g of grids) {
-        try {
-          const descriptions = await generateDescriptions();
-          allDescriptions.push(descriptions);
-          // Brief pause between Flash calls
-          if (g < grids[grids.length - 1]) {
-            await new Promise((r) => setTimeout(r, 500));
-          }
-        } catch (err) {
-          console.error(`  Descriptions for grid ${g} failed: ${err.message}`);
-          allDescriptions.push(null);
-        }
-      }
-
-      const valid = allDescriptions.filter(Boolean);
-      if (valid.length === 0) throw new Error("All description generations failed");
-
-      await submitBatch(valid);
-      console.log("\nBatch submitted. Images will be ready within 24h (usually much faster).");
-      console.log("Run with --slice-only after batch completes to slice into avatars.");
-      return;
+    const descriptionPromises = [];
+    for (let i = 0; i < totalDescriptions; i++) {
+      const globalIdx = (grids[0] - 1) * PER_GRID + i;
+      const category = categoryForSlot(globalIdx);
+      descriptionPromises.push(
+        generateOneDescription(globalIdx, category)
+          .then((desc) => ({ idx: i, desc, ok: true }))
+          .catch((err) => {
+            console.error(`  Slot ${i} failed: ${err.message}`);
+            return { idx: i, desc: null, ok: false };
+          })
+      );
     }
 
-    // Synchronous mode
+    const results = await Promise.all(descriptionPromises);
+    const succeeded = results.filter((r) => r.ok).length;
+    const failed = results.filter((r) => !r.ok).length;
+    console.log(`  ${succeeded} descriptions generated, ${failed} failed (${((Date.now() - t1) / 1000).toFixed(1)}s)`);
+
+    // Fill failed slots with a generic fallback description
+    const fallback = "A person with an unsettling smile staring directly into the camera with fluorescent office lighting and a wilting plant behind them.";
+    const descriptions = results.map((r) => r.desc || fallback);
+
+    // Log descriptions grouped by grid
     for (const g of grids) {
-      try {
-        const descriptions = await generateDescriptions();
-        await new Promise((r) => setTimeout(r, 300)); // brief pause
-        await generateGrid(descriptions, g);
-      } catch (err) {
-        console.error(`Grid ${g} failed: ${err.message}`);
-      }
-
-      // Pause between API calls
-      if (g < grids[grids.length - 1]) {
-        await new Promise((r) => setTimeout(r, 2000));
+      const startSlot = (g - grids[0]) * PER_GRID;
+      console.log(`\n  Grid ${g} descriptions:`);
+      for (let j = 0; j < PER_GRID; j++) {
+        const d = descriptions[startSlot + j];
+        console.log(`    ${j + 1}. ${d.slice(0, 75)}...`);
       }
     }
+
+    // -----------------------------------------------------------------------
+    // Stage 2: All Nano Banana calls in parallel
+    // -----------------------------------------------------------------------
+    console.log(`\nStage 2: Generating ${grids.length} grids in parallel via Nano Banana 2...`);
+    const t2 = Date.now();
+
+    const gridPromises = grids.map((g, gi) => {
+      const startSlot = gi * PER_GRID;
+      const gridDescs = descriptions.slice(startSlot, startSlot + PER_GRID);
+      return generateGrid(gridDescs, g)
+        .then((path) => ({ grid: g, path, ok: true }))
+        .catch((err) => {
+          console.error(`  Grid ${g} failed: ${err.message}`);
+          return { grid: g, path: null, ok: false };
+        });
+    });
+
+    const gridResults = await Promise.all(gridPromises);
+    const gridSucceeded = gridResults.filter((r) => r.ok).length;
+    console.log(`  ${gridSucceeded}/${grids.length} grids generated (${((Date.now() - t2) / 1000).toFixed(1)}s)`);
   }
 
-  // Slice all grids
-  console.log("\nStage 3: Slicing grids into individual avatars...");
+  // -------------------------------------------------------------------------
+  // Stage 3: Slice all grids
+  // -------------------------------------------------------------------------
+  console.log("\nStage 3: Slicing grids into thumbnails + lightbox...");
   let totalAvatars = 0;
   let totalBytes = 0;
 
@@ -403,9 +434,18 @@ async function main() {
     }
   }
 
+  // Clean up grid PNGs (large, not needed for web)
+  for (const g of grids) {
+    const gridPath = join(AVATARS_DIR, `grid-${g}.png`);
+    if (existsSync(gridPath)) {
+      const { unlinkSync } = await import("fs");
+      unlinkSync(gridPath);
+    }
+  }
+
   if (totalAvatars > 0) {
     console.log(
-      `\nDone: ${totalAvatars} avatars, ${(totalBytes / 1024).toFixed(0)}KB total (${(totalBytes / totalAvatars / 1024).toFixed(1)}KB avg)`
+      `\nDone: ${totalAvatars} avatars (128px + 512px), ${(totalBytes / 1024).toFixed(0)}KB total`
     );
   } else {
     console.log("\nNo grids to slice.");
