@@ -6,17 +6,26 @@
 
 AutoUAT is a desktop application, CLI tool, and MCP server for automated user acceptance testing. It uses Playwright-based browser automation combined with AI-powered evaluation to discover bugs across browsers, viewports, and user roles that manual QA consistently misses.
 
-Unlike Selenium, Cypress, or Playwright test suites, AutoUAT requires zero test code. You provide a URL. It discovers pages, generates scenarios, executes them across Chromium/Firefox/WebKit, and produces a shareable HTML report.
+Unlike Selenium, Cypress, or Playwright test suites, AutoUAT requires zero test code. You provide a URL. It discovers pages, generates scenarios, executes them across Chromium/Firefox/WebKit/Electron, and produces a shareable HTML report.
 
 ## Key Capabilities
 
 - Zero-config URL scanning - paste a URL, get findings
 - Adaptive Thompson sampling - focuses on high-yield areas automatically
-- Multi-browser testing - Chromium, Firefox, WebKit simultaneously
+- Multi-browser testing - Chromium, Firefox, WebKit, and Electron simultaneously
 - AI critic panel - 3-persona LLM evaluation with 2-of-3 consensus
-- Deterministic evaluators - console errors, network failures, layout overflow, accessibility (axe-core), performance (LCP/CLS)
+- 12+ deterministic evaluators - console errors, network failures, layout overflow, accessibility (axe-core), performance (LCP/CLS)
 - Interactive review studio - offline HTML report with screenshot overlays and annotations
 - MCP server with 11 tools for AI agent integration
+- Step recorder - record clicks, form fills, and navigation in a live browser
+- Encrypted login profiles - store credentials per user role for authenticated testing
+- Safe mode - block destructive paths, selectors, HTTP methods for production safety
+- Site probe - quick pre-scan estimates pages, forms, auth walls, and test time
+- LLM export - one-click copy findings as markdown for AI coding agents
+- 8 LLM providers - OpenRouter, Anthropic, OpenAI, Ollama, LM Studio, Together, Groq, custom
+- SPA-aware discovery - click-and-detect for React, Vue, and Electron apps
+- 14 framework resolvers - auto-detect stack, install deps, start dev servers
+- Run history and replay - browse, replay, and compare past test runs
 
 ## Installation
 
@@ -28,7 +37,7 @@ npx autouat run --url https://example.com --scenarios 20
 
 ## Pricing
 
-$39 one-time purchase. No subscription. Free updates forever. 3 device activations included.
+$39 one-time purchase. Own it forever. 3 device activations included. Free updates. Optional $19/year maintenance plan coming soon.
 
 Purchase: https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R
 
@@ -39,7 +48,10 @@ Purchase: https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tm
 | Test code required | No | Yes | Yes | Yes |
 | Auto-discovery | Yes | No | No | No |
 | AI evaluation | Yes | No | No | No |
-| Multi-browser | Yes | Yes | Limited | Yes |
+| Multi-browser | 4 engines | Yes | Limited | Yes |
+| SPA / Electron | Native | Limited | Limited | Limited |
+| Safe mode | Built-in | No | No | No |
+| Step recorder | Yes | IDE plugin | No | Codegen |
 | Setup time | 2 min | Hours | 30 min | 30 min |
 | Report generation | Built-in | Manual | Manual | Manual |
 
@@ -50,7 +62,7 @@ Purchase: https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tm
 
 ## Technical Stack
 
-TypeScript, Playwright, Electron v40, React 19, Zod, vitest (206 tests passing)
+TypeScript, Playwright, Electron v40, React 19, Zod, vitest (309 tests passing)
 
 ## Publisher
 

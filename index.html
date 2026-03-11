@@ -27,7 +27,7 @@
 
   <!-- Freshness + AI signals -->
   <meta property="article:published_time" content="2026-03-09T00:00:00Z">
-  <meta property="article:modified_time" content="2026-03-09T00:00:00Z">
+  <meta property="article:modified_time" content="2026-03-10T00:00:00Z">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 
   <!-- Machine-readable alternatives -->
@@ -69,13 +69,22 @@
         "featureList": [
           "Zero-config URL scanning",
           "Adaptive Thompson sampling",
-          "Multi-browser testing (Chromium, Firefox, WebKit)",
+          "Multi-browser testing (Chromium, Firefox, WebKit, Electron)",
           "AI critic panel with 3-persona consensus",
           "Deterministic evaluators (console errors, network failures, layout overflow, accessibility, performance)",
           "Interactive HTML review studio with screenshots",
           "CLI for CI/CD integration",
           "MCP server with 11 tools for AI agent integration",
-          "Electron desktop application"
+          "Electron desktop application",
+          "SPA-aware discovery for React, Vue, and Electron apps",
+          "14 framework auto-detect resolvers",
+          "Step recorder for manual test flows",
+          "Encrypted login profile management",
+          "Production safe mode with blocked paths and actions",
+          "LLM-friendly markdown export for AI agents",
+          "8 LLM providers (OpenRouter, Anthropic, OpenAI, Ollama, LM Studio, Together, Groq, custom)",
+          "Run history with replay",
+          "Site probe with cost estimation"
         ]
       },
       {
@@ -132,7 +141,7 @@
             "name": "What browsers does AutoUAT support?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "AutoUAT tests across Chromium, Firefox, and WebKit simultaneously using Playwright. This catches browser-specific rendering bugs, behavior differences, and CSS inconsistencies that single-browser tools miss."
+              "text": "AutoUAT tests across Chromium, Firefox, WebKit, and Electron simultaneously using Playwright. This includes native Electron desktop app testing. It catches browser-specific rendering bugs, behavior differences, and CSS inconsistencies that single-browser tools miss."
             }
           }
         ]
@@ -1235,7 +1244,7 @@
         <span>Lines of TypeScript</span>
       </div>
       <div class="proof-stat">
-        <strong>206</strong>
+        <strong>309</strong>
         <span>Tests Passing</span>
       </div>
       <div class="proof-stat">
@@ -1243,7 +1252,7 @@
         <span>MCP Tools</span>
       </div>
       <div class="proof-stat">
-        <strong>3</strong>
+        <strong>4</strong>
         <span>Browser Engines</span>
       </div>
     </div>
@@ -1321,7 +1330,7 @@
     <section class="features" id="features" aria-label="Features">
       <span class="section-label">Capabilities</span>
       <h2 class="section-heading">What it catches</h2>
-      <p class="section-sub">Deterministic evaluators run every scenario. AI critics add a human-quality review layer. Adaptive sampling focuses effort where bugs live.</p>
+      <p class="section-sub">12+ deterministic evaluators run every scenario. AI critics add a human-quality review layer. Adaptive sampling focuses effort where bugs live.</p>
       <div class="feature-grid">
         <article class="feature-cell">
           <div class="feature-tag tag-deterministic">Deterministic</div>
@@ -1361,12 +1370,57 @@
         <article class="feature-cell">
           <div class="feature-tag tag-multi">Multi-Browser</div>
           <h3>Cross-Browser Testing</h3>
-          <p>Chromium, Firefox, and WebKit simultaneously. Finds browser-specific rendering and behavior bugs.</p>
+          <p>Chromium, Firefox, WebKit, and Electron simultaneously. Finds browser-specific rendering and behavior bugs.</p>
         </article>
         <article class="feature-cell">
           <div class="feature-tag tag-reports">Reports</div>
           <h3>Review Studio</h3>
           <p>Interactive offline HTML report with screenshot overlays, annotations, and a synthesis brief for stakeholders.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-adaptive">Adaptive</div>
+          <h3>SPA Discovery</h3>
+          <p>Click-and-detect discovery for React, Vue, and Electron apps. Finds views that have no traditional routes by monitoring DOM mutations.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-multi">Multi-Browser</div>
+          <h3>Electron Support</h3>
+          <p>Test native desktop apps built with Electron. Launches the app binary directly - no URL required. Same evaluators, same reports.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-deterministic">Deterministic</div>
+          <h3>Framework Detection</h3>
+          <p>14 framework resolvers auto-detect your stack (React, Django, Rails, Laravel, Spring Boot, and more), install deps, and start dev servers.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-reports">Reports</div>
+          <h3>Step Recorder</h3>
+          <p>Record clicks, form fills, and navigation in a live browser. Undo steps, export flows, and feed recorded sequences directly into test scenarios.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-deterministic">Deterministic</div>
+          <h3>Login Profiles</h3>
+          <p>Store encrypted credentials for multiple user roles. AutoUAT logs in as each role and tests what that user actually sees - admin, member, guest.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-deterministic">Deterministic</div>
+          <h3>Safe Mode</h3>
+          <p>Block destructive paths, selectors, HTTP methods, and URL patterns. Run against production without fear of writes, deletes, or account changes.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-adaptive">Adaptive</div>
+          <h3>Site Probe</h3>
+          <p>Quick pre-scan estimates pages, forms, auth walls, and test time before committing to a full run. Know the cost before you click Start.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-reports">Reports</div>
+          <h3>LLM Export</h3>
+          <p>One-click copy of findings as structured markdown. Paste directly into Claude, ChatGPT, or any AI coding agent for automated fix suggestions.</p>
+        </article>
+        <article class="feature-cell">
+          <div class="feature-tag tag-ai">AI Critic</div>
+          <h3>Bring Your Own LLM</h3>
+          <p>8 providers supported: OpenRouter, Anthropic, OpenAI, Ollama, LM Studio, Together, Groq, or any OpenAI-compatible endpoint. Your keys, your models.</p>
         </article>
       </div>
     </section>
@@ -1410,7 +1464,7 @@
           </tr>
           <tr>
             <td>Multi-browser</td>
-            <td class="highlight"><span class="check">3 engines</span></td>
+            <td class="highlight"><span class="check">4 engines</span></td>
             <td>Yes</td>
             <td>Chromium only</td>
             <td>Yes</td>
@@ -1442,6 +1496,27 @@
             <td><span class="cross">No</span></td>
             <td><span class="cross">No</span></td>
             <td><span class="cross">No</span></td>
+          </tr>
+          <tr>
+            <td>SPA / Electron testing</td>
+            <td class="highlight"><span class="check">Native</span></td>
+            <td><span class="cross">Limited</span></td>
+            <td><span class="cross">Limited</span></td>
+            <td><span class="cross">Limited</span></td>
+          </tr>
+          <tr>
+            <td>Production safe mode</td>
+            <td class="highlight"><span class="check">Built-in</span></td>
+            <td><span class="cross">No</span></td>
+            <td><span class="cross">No</span></td>
+            <td><span class="cross">No</span></td>
+          </tr>
+          <tr>
+            <td>Step recorder</td>
+            <td class="highlight"><span class="check">Yes</span></td>
+            <td>IDE plugin</td>
+            <td><span class="cross">No</span></td>
+            <td>Codegen</td>
           </tr>
         </tbody>
       </table>
@@ -1531,7 +1606,7 @@
 
       <details class="faq-item">
         <summary>How is AutoUAT different from Selenium or Cypress?</summary>
-        <p>Unlike Selenium or Cypress which require you to write and maintain test scripts, AutoUAT requires zero test code. You point it at a URL and it automatically discovers pages, generates test scenarios using adaptive sampling, runs them across Chromium, Firefox, and WebKit, and produces a shareable HTML report. Setup takes 2 minutes versus hours for traditional test frameworks. It also includes an AI critic panel and Thompson sampling - capabilities no traditional test tool offers.</p>
+        <p>Unlike Selenium or Cypress which require you to write and maintain test scripts, AutoUAT requires zero test code. You point it at a URL and it automatically discovers pages, generates test scenarios using adaptive sampling, runs them across Chromium, Firefox, WebKit, and Electron, and produces a shareable HTML report. Setup takes 2 minutes versus hours for traditional test frameworks. It also includes an AI critic panel and Thompson sampling - capabilities no traditional test tool offers.</p>
       </details>
 
       <details class="faq-item">
@@ -1551,7 +1626,22 @@
 
       <details class="faq-item">
         <summary>What browsers does AutoUAT support?</summary>
-        <p>AutoUAT tests across Chromium, Firefox, and WebKit simultaneously using Playwright. This catches browser-specific rendering bugs, CSS inconsistencies, and JavaScript behavior differences that single-browser testing tools miss.</p>
+        <p>AutoUAT tests across Chromium, Firefox, WebKit, and Electron simultaneously using Playwright. This includes native desktop app testing for Electron apps. It catches browser-specific rendering bugs, CSS inconsistencies, and JavaScript behavior differences that single-browser testing tools miss.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can AutoUAT test authenticated pages?</summary>
+        <p>Yes. Create encrypted login profiles in Settings with username/password pairs for each user role (admin, member, guest). AutoUAT logs in as each role before testing, so it sees what that user actually sees. Credentials are stored with OS-level encryption - never in plaintext.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is it safe to run against production?</summary>
+        <p>Yes, with Safe Mode enabled. You can block specific URL paths, CSS selectors, button text patterns, HTTP methods (like DELETE), and request URL patterns. AutoUAT will navigate and observe but never trigger destructive actions. You can also restrict to authenticated-only pages or run in warn-only mode.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>What LLM providers are supported?</summary>
+        <p>AutoUAT supports 8 providers for the AI critic panel: OpenRouter, Anthropic, OpenAI, Ollama, LM Studio, Together AI, Groq, and any custom OpenAI-compatible endpoint. Bring your own API keys - AutoUAT never phones home. You can also run without LLM entirely using only the deterministic evaluators.</p>
       </details>
 
       <details class="faq-item">
@@ -1571,10 +1661,18 @@
           <li>Desktop app for macOS and Windows</li>
           <li>CLI for CI/CD pipelines</li>
           <li>MCP server with 11 agent tools</li>
-          <li>Multi-browser testing (3 engines)</li>
+          <li>Multi-browser testing (4 engines + Electron)</li>
           <li>AI critic panel evaluation</li>
           <li>Interactive review studio</li>
           <li>Adaptive Thompson sampling</li>
+          <li>SPA-aware discovery for React/Vue/Electron</li>
+          <li>14 framework auto-detect resolvers</li>
+          <li>Step recorder for manual flows</li>
+          <li>Encrypted login profiles</li>
+          <li>Safe mode for production</li>
+          <li>LLM-friendly markdown export</li>
+          <li>8 LLM providers (BYO keys)</li>
+          <li>Run history and replay</li>
           <li>3 device activations</li>
           <li>Free updates included</li>
         </ul>
@@ -1591,7 +1689,7 @@
     </div>
     <p class="footer-copy">
       AutoUAT by SIMPLYMAN LLC. Built with Playwright, TypeScript, and spite for manual QA.
-      <br>Last updated <time datetime="2026-03-09">March 9, 2026</time>.
+      <br>Last updated <time datetime="2026-03-10">March 10, 2026</time>.
     </p>
   </footer>
 
