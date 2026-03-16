@@ -1,454 +1,696 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AutoUAT Documentation</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0a0a0a;
-      --text: #e0e0e0;
-      --accent: #d69e46;
-      --border: #2a2a2a;
-      --card-bg: #121212;
-      --sidebar-width: 280px;
-      --header-height: 60px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoUAT Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --text: #e0e0e0;
+    --accent: #d69e46;
+    --border: #1a1a1a;
+    --card: #111;
+    --muted: #666;
+    --sidebar-w: 260px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* Sidebar */
+  #sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    transition: color 0.2s;
+  }
+  .sidebar-back:hover { color: var(--accent); text-decoration: none; }
+
+  .sidebar-logo {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .sidebar-logo span { color: var(--accent); }
+
+  .sidebar-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 20px 20px 8px;
+  }
+
+  .sidebar-nav { padding: 0 8px 24px; }
+
+  .sidebar-nav a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #aaa;
+    transition: all 0.15s;
+  }
+  .sidebar-nav a:hover, .sidebar-nav a.active {
+    background: rgba(214, 158, 70, 0.1);
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* Mobile toggle */
+  #menu-toggle {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Main content */
+  main {
+    margin-left: var(--sidebar-w);
+    max-width: 860px;
+    padding: 56px 48px 80px;
+  }
+
+  section {
+    padding-top: 16px;
+    margin-bottom: 64px;
+    border-top: 1px solid var(--border);
+  }
+  section:first-of-type { border-top: none; }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .section-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 16px;
+    color: var(--text);
+    padding-top: 40px;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 24px 0 8px;
+  }
+
+  p { margin-bottom: 16px; color: #ccc; }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 16px;
+    color: #ccc;
+  }
+  li { margin-bottom: 6px; }
+  li strong { color: var(--text); }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .card-sm {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card-sm .label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+  .card-sm .value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* Code blocks */
+  pre {
+    background: #0d0d0d;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+  }
+
+  pre code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #c9d1d9;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: #161616;
+    border: 1px solid #222;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #e6c98a;
+  }
+
+  /* Syntax highlights */
+  .kw { color: #ff79c6; }
+  .str { color: #f1fa8c; }
+  .cm { color: #6272a4; }
+  .key { color: #8be9fd; }
+  .val { color: #50fa7b; }
+  .num { color: #bd93f9; }
+
+  /* Pipeline steps */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+
+  .pipeline-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    background: rgba(214, 158, 70, 0.15);
+    border: 1px solid rgba(214, 158, 70, 0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 1px;
+  }
+
+  .step-content strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .step-content span { font-size: 13px; color: #999; }
+
+  /* Threshold table */
+  .threshold-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .threshold-table th {
+    text-align: left;
+    padding: 10px 14px;
+    background: #111;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .threshold-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: #ccc;
+    vertical-align: top;
+  }
+
+  .threshold-table tr:last-child td { border-bottom: none; }
+  .threshold-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* Alert boxes */
+  .alert {
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    border-left: 3px solid;
+  }
+
+  .alert-tip {
+    background: rgba(80, 250, 123, 0.05);
+    border-color: #50fa7b;
+    color: #a8f5be;
+  }
+
+  .alert-warn {
+    background: rgba(255, 184, 108, 0.05);
+    border-color: #ffb86c;
+    color: #ffd4a0;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .badge-cli { background: rgba(139, 233, 253, 0.1); color: #8be9fd; }
+  .badge-gui { background: rgba(189, 147, 249, 0.1); color: #bd93f9; }
+  .badge-mcp { background: rgba(214, 158, 70, 0.1); color: var(--accent); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    #menu-toggle { display: flex; }
+
+    #sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+    }
+    #sidebar.open { transform: translateX(0); }
+
+    main {
+      margin-left: 0;
+      padding: 64px 24px 60px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      display: flex;
-      min-height: 100vh;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      font-weight: 600;
-      margin: 1.5em 0 0.8em;
-      color: #ffffff;
-    }
-
-    h3 {
-      font-size: 1.4em;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.3em;
-      margin-top: 2em;
-    }
-
-    p {
-      margin: 1em 0;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    code {
-      font-family: 'JetBrains Mono', monospace;
-      background: #1a1a1a;
-      color: #f8f8f2;
-      padding: 0.2em 0.4em;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
-
-    pre {
-      background: #1a1a1a;
-      border-radius: 8px;
-      padding: 16px;
-      overflow-x: auto;
-      margin: 1.5em 0;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.95em;
-      line-height: 1.5;
-    }
-
-    pre code {
-      background: none;
-      padding: 0;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: var(--sidebar-width);
-      background: #0f0f0f;
-      border-right: 1px solid var(--border);
-      padding: 20px 0;
-      position: fixed;
-      height: calc(100vh - var(--header-height));
-      top: var(--header-height);
-      left: 0;
-      overflow-y: auto;
-      transition: transform 0.3s ease;
-    }
-
-    .sidebar-header {
-      padding: 0 20px 16px;
-      font-weight: 600;
-      font-size: 1.1em;
-      color: var(--accent);
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
-    }
-
-    .nav-group {
-      margin-bottom: 24px;
-    }
-
-    .nav-group-title {
-      padding: 8px 20px;
-      font-size: 0.9em;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #a0a0a0;
-    }
-
-    .nav-list {
-      list-style: none;
-    }
-
-    .nav-item {
-      padding: 8px 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .nav-item:hover {
-      background: #1a1a1a;
-    }
-
-    .nav-item svg {
-      width: 16px;
-      height: 16px;
-      stroke: #888;
-      stroke-width: 2;
-      flex-shrink: 0;
-    }
-
-    .nav-item.active {
-      background: #1a1a1a;
-      border-left: 3px solid var(--accent);
-      padding-left: 17px;
-    }
-
-    .nav-item.active svg {
-      stroke: var(--accent);
-    }
-
-    /* Main content */
-    .main {
-      flex: 1;
-      margin-left: var(--sidebar-width);
-      padding: 40px;
-      padding-top: 20px;
-    }
-
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: var(--header-height);
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      z-index: 10;
-    }
-
-    .home-link {
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 1.2em;
-    }
-
-    .home-link:hover {
-      text-decoration: underline;
-    }
-
-    /* Components */
-    .callout {
-      background: #2a1b0a;
-      border-left: 4px solid var(--accent);
-      padding: 16px;
-      border-radius: 0 8px 8px 0;
-      margin: 1.5em 0;
-      font-size: 0.95em;
-    }
-
-    .callout p {
-      margin: 0;
-    }
-
-    .key-value-grid {
-      display: grid;
-      gap: 12px;
-      margin: 1.5em 0;
-    }
-
-    .key-value {
-      background: var(--card-bg);
-      padding: 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-
-    .key-value-label {
-      font-weight: 500;
-      color: var(--accent);
-      font-size: 0.9em;
-      margin-bottom: 4px;
-    }
-
-    .key-value-value {
-      font-size: 0.95em;
-      line-height: 1.5;
-    }
-
-    .two-col {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .three-col {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .step-list {
-      margin: 1.5em 0;
-    }
-
-    .step-item {
-      display: flex;
-      margin-bottom: 16px;
-      gap: 12px;
-    }
-
-    .step-number {
-      background: var(--accent);
-      color: #000;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      flex-shrink: 0;
-    }
-
-    .step-content h4 {
-      margin: 0 0 4px;
-      font-size: 1em;
-    }
-
-    .step-content p {
-      margin: 0;
-      font-size: 0.95em;
-      color: #cccccc;
-    }
-
-    .diagram {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px;
-      margin: 1.5em 0;
-    }
-
-    .diagram-title {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 1.1em;
-      color: #ffffff;
-    }
-
-    .diagram-boxes {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .diagram-box {
-      flex: 1;
-      min-width: 120px;
-      background: var(--accent);
-      color: #000;
-      padding: 12px;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 0.85em;
-    }
-
-    .diagram-box-label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .diagram-box-detail {
-      opacity: 0.9;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .sidebar {
-        transform: translateX(-100%);
-        z-index: 20;
-      }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .main {
-        margin-left: 0;
-      }
-
-      .hamburger {
-        display: block;
-        cursor: pointer;
-        padding: 8px;
-        margin-right: 10px;
-      }
-
-      .hamburger-line {
-        width: 24px;
-        height: 2px;
-        background: var(--text);
-        display: block;
-        margin: 5px 0;
-        transition: 0.3s;
-      }
-    }
-
-    @media (min-width: 901px) {
-      .hamburger {
-        display: none;
-      }
-    }
-  </style>
+    h1 { font-size: 26px; }
+    h2 { font-size: 20px; }
+  }
+</style>
 </head>
 <body>
-  <header class="header">
-    <div class="hamburger" onclick="toggleSidebar()">
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-    </div>
-    <a href="../" class="home-link">AutoUAT Docs</a>
-  </header>
 
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">Documentation</div>
+<button id="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle menu">&#9776;</button>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Getting Started</div>
-      <ul class="nav-list">
-        <li class="nav-item" onclick="navigate('overview')">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" /></svg>
-          <span>What is AutoUAT</span>
-        </li>
-        <li class="nav-item" onclick="navigate('quickstart')">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" /></svg>
-          <span>Quick Start</span>
-        </li>
-        <li class="nav-item" onclick="navigate('how-it-works')">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z M9 9h6 M9 12h6 M9 15h4" stroke="currentColor" /></svg>
-          <span>How It Works</span>
-        </li>
-      </ul>
-    </div>
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <a href="../" class="sidebar-back">
+      <span>&larr;</span> Back to AutoUAT
+    </a>
+    <div class="sidebar-logo">Auto<span>UAT</span> Docs</div>
+  </div>
 
-    <div class="nav-group">
-      <div class="nav-group-title">Desktop App</div>
-      <ul class="nav-list">
-        <li class="nav-item" onclick="navigate('run-setup')">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M5 3l14 9-14 9V3z" stroke="currentColor" /></svg>
-          <span>Run Setup</span>
-        </li>
-        <li class="nav-item" onclick="navigate('live-run')">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20 M2 12h20" stroke="currentColor" /></svg>
-          <span>Live Run</span>
-        </li>
-        <li class="nav-item" onclick="navigate('run-history')">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M3 3h18v18H3z M3 9h18 M9 3v18" stroke="currentColor" /></svg>
-          <span>Run History</span>
-        </li>
-        <li class="nav-item" onclick="navigate('settings')">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83" stroke="currentColor" /></svg>
-          <span>Settings</span>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <div class="sidebar-label">Contents</div>
+  <div class="sidebar-nav">
+    <a href="#overview">Overview</a>
+    <a href="#quick-start">Quick Start</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#run-setup">Run Setup</a>
+    <a href="#reports">Reports</a>
+    <a href="#cicd">CI/CD Integration</a>
+    <a href="#quality-gates">Quality Gates</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+  </div>
+</nav>
 
-  <main class="main" id="mainContent">
-    <section id="overview">
-      <h2>What is AutoUAT</h2>
-      <p>
-        AutoUAT is a stochastic UAT/UX testing engine. Point it at any URL and it
-        automatically discovers pages, generates test scenarios, executes them in real
-        browsers, and produces structured reports with prioritized issues.
-      </p>
+<main>
 
-      <div class="callout">
-        <p>
-          Unlike traditional E2E tools, AutoUAT does not require you to write test scripts.
-          It automatically focuses on the parts of your app most likely to have bugs - no test scripts required.
-        </p>
+  <!-- Overview -->
+  <section id="overview">
+    <span class="section-tag">Introduction</span>
+    <h1>AutoUAT Documentation</h1>
+    <p>AutoUAT is a stochastic UAT/UX testing engine. Point it at any URL and it automatically discovers pages, generates test scenarios, executes them in real browsers, and produces structured reports with prioritized issues.</p>
+    <p>Unlike traditional E2E tools, AutoUAT does not require you to write test scripts. It automatically focuses on the parts of your app most likely to have bugs.</p>
+
+    <h3>Core Capabilities</h3>
+    <ul>
+      <li><strong>Discovery</strong> - Crawls your site, finds routes, forms, auth walls, and interactive elements automatically.</li>
+      <li><strong>Scenario generation</strong> - Creates role/viewport/flow combinations using adaptive sampling.</li>
+      <li><strong>Browser execution</strong> - Runs in real Chromium, Firefox, WebKit, or Electron via Playwright with screenshots at every step.</li>
+      <li><strong>Heuristic evaluation</strong> - 12+ production-ready evaluators score each scenario for layout, accessibility, performance.</li>
+      <li><strong>LLM critic panel</strong> - Optional multi-agent LLM panel reviews findings with 2-of-3 consensus.</li>
+      <li><strong>Triage + dedup</strong> - Automatic severity scoring deduplicates and ranks issues.</li>
+    </ul>
+
+    <h3>Interfaces</h3>
+    <div class="card-grid">
+      <div class="card-sm">
+        <div class="label">Desktop App</div>
+        <div class="value"><span class="badge badge-gui">GUI</span> Electron app</div>
       </div>
+      <div class="card-sm">
+        <div class="label">Command Line</div>
+        <div class="value"><span class="badge badge-cli">CLI</span> Terminal &amp; CI</div>
+      </div>
+      <div class="card-sm">
+        <div class="label">MCP Server</div>
+        <div class="value"><span class="badge badge-mcp">MCP</span> 11 tools for AI agents</div>
+      </div>
+    </div>
+  </section>
 
-      <h3>Core capabilities</h3>
-      <div class="key-value-grid two-col">
-        <div class="key-value">
-          <div class="key-value-label">Discovery</div>
-          <div class="key-value-value">Crawls your site, finds routes, forms, auth walls, and interactive elements automatically.</div>
-        </div>
-        <div class="key-value">
-          <div class="key-value-label">Scenario generation</div>
-          <div class="key-value-value">Creates role/viewport/flow combinations from discovered structure using adaptive sampling.</div>
-        </div>
-        <div class="key-value">
-          <div class="key-value-label">Browser execution</div>
-          <div class="key-value-value">Runs scenarios in real Chromium, Firefox, WebKit, or Electron via Playwright with screenshot and DOM capture at every step.</div>
-        </div>
-        <div class="key-value">
-          <div class="key-value-label">Heuristic evaluation</div>
-          <div class="key-value-value">11 production-ready evaluators score each scenario for layout, accessibility, content, performance, and more.</div>
-        </div>
-        <div class="key-value">
-          <div class="key-value-label">LLM critic panel</div>
-          <div class="key-value-value">Optional multi-agent LLM panel reviews findings and reaches consensus on real issues.</div>
-        </div>
-        <div class="key-value">
-          <div class="key-value-label">Triage + dedup</div>
-          <div class="key-value-value">Automatic severity scoring deduplicates findings and ranks issues by priority.</div>
+  <!-- Quick Start -->
+  <section id="quick-start">
+    <h2>Quick Start</h2>
+    <p>Get from zero to your first report in under 5 minutes.</p>
+
+    <h3><span class="badge badge-gui">GUI</span> Desktop App</h3>
+    <p>Download and install the app, paste a URL into the target field, click <strong>Start a Run</strong>.</p>
+
+    <h3><span class="badge badge-cli">CLI</span> Command Line</h3>
+<pre><code><span class="cm"># Quick scan with defaults</span>
+npm run cli -- run https://example.com
+
+<span class="cm"># With options</span>
+npm run cli -- run https://example.com --scenarios 30 --depth 5
+
+<span class="cm"># Replay a previous run</span>
+npm run cli -- replay &lt;runId&gt;</code></pre>
+
+    <h3><span class="badge badge-mcp">MCP</span> AI Agents</h3>
+<pre><code><span class="cm"># Zero-config scan from any MCP client</span>
+autouat_scan({ url: <span class="str">"https://example.com"</span> })
+
+<span class="cm"># Check findings from a run</span>
+autouat_findings({ runId: <span class="str">"run-2026-03-09-..."</span> })</code></pre>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works">
+    <h2>How It Works</h2>
+    <p>AutoUAT follows a six-stage pipeline for every run.</p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Discovery</strong>
+          <span>Crawls your site, follows links, detects forms, identifies auth walls, builds a route graph. For SPAs, uses click-and-detect.</span>
         </div>
       </div>
-
-      <h3>Three interfaces</h3>
-      <div class="key-value-grid three-col">
-        <div class="key-value">
-          <div class="key-value-label">Desktop app</div>
-          <div class="key-value-value">Electron GUI with visual run setup, live progress, settings, and run history.</div>
+      <div class="pipeline-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Scenario Generation</strong>
+          <span>Uses adaptive Thompson sampling to prioritize high-yield areas across role, viewport, and flow combinations.</span>
         </div>
-        <div class="
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Browser Execution</strong>
+          <span>Runs scenarios across Chromium, Firefox, WebKit, and Electron simultaneously via Playwright with screenshots at every step.</span>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <strong>Heuristic Evaluation</strong>
+          <span>12+ deterministic evaluators check console errors, network failures, layout overflow, accessibility (axe-core), and performance (LCP/CLS).</span>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <strong>LLM Critic Panel</strong>
+          <span>3-persona panel reviews each finding. A 2-of-3 consensus is required before an issue is surfaced.</span>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <strong>Triage &amp; Reporting</strong>
+          <span>Deduplicates, severity-ranks, and generates an interactive HTML report with all artifacts.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Run Setup -->
+  <section id="run-setup">
+    <h2>Run Setup</h2>
+    <p>The Run Setup screen is where every test begins. Enter a URL, tune parameters, and launch.</p>
+
+    <div class="card">
+      <h3 style="margin-top:0">Target URL vs Project Folder</h3>
+      <p style="margin-bottom:0">URL-only gives a quick scan with no memory. Adding a project folder means triage decisions, regressions, and trends carry forward across runs.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Discovery vs Config Mode</h3>
+      <p style="margin-bottom:0">Discovery auto-crawls the site. Config mode uses a JSON file for precise control over which paths and scenarios run.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Cost Estimate Card</h3>
+      <p style="margin-bottom:0">Shows projected pages, scenarios, execution time, and LLM cost before the run begins. No surprises.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Probe Button</h3>
+      <p style="margin-bottom:0">Crawls up to 8 pages to detect auth walls, forms, and routes before committing to a full run. Run this first on unknown targets.</p>
+    </div>
+  </section>
+
+  <!-- Reports -->
+  <section id="reports">
+    <h2>Reports</h2>
+    <p>Every run produces multiple report formats to suit different workflows.</p>
+
+    <h3>Review Studio (Interactive HTML)</h3>
+    <p>The primary report. Screenshot overlays, element inspection, findings panel, and critic panel are all included. State persists in <code>localStorage</code> between sessions.</p>
+
+    <h3>Standalone Export</h3>
+    <p>A single self-contained HTML file you can email or share - no server required.</p>
+
+    <h3>Markdown / LLM Export</h3>
+    <p>Two variants:</p>
+    <ul>
+      <li><code>report.md</code> - Full findings in Markdown.</li>
+      <li><code>llm-export.md</code> - Compact format optimized for pasting into LLM conversations.</li>
+    </ul>
+
+    <h3>JSON Artifacts</h3>
+    <p>Machine-readable findings for programmatic consumption, CI assertion, or integration with other tooling.</p>
+  </section>
+
+  <!-- CI/CD -->
+  <section id="cicd">
+    <h2>CI/CD Integration</h2>
+    <p>AutoUAT integrates into any CI/CD pipeline via the CLI as a release gate. Use <code>--release-gate</code> to apply stricter thresholds and <code>--exit-code</code> to return a non-zero exit code when the gate fails.</p>
+
+    <h3>GitHub Actions</h3>
+<pre><code><span class="key">name</span>: <span class="val">AutoUAT Release Gate</span>
+<span class="key">on</span>: <span class="val">[push]</span>
+<span class="key">jobs</span>:
+  <span class="key">quality-gate</span>:
+    <span class="key">runs-on</span>: <span class="val">ubuntu-latest</span>
+    <span class="key">steps</span>:
+      - <span class="key">uses</span>: <span class="val">actions/checkout@v4</span>
+      - <span class="key">uses</span>: <span class="val">actions/setup-node@v4</span>
+        <span class="key">with</span>:
+          <span class="key">node-version</span>: <span class="num">20</span>
+      - <span class="key">run</span>: <span class="val">npx playwright install chromium</span>
+      - <span class="key">run</span>: <span class="val">npx autouat run --release-gate --baseUrl $STAGING_URL --exit-code</span></code></pre>
+
+    <h3>Generic CLI</h3>
+<pre><code>npx autouat run \
+  --release-gate \
+  --baseUrl https://staging.example.com \
+  --max-scenarios 30 \
+  --exit-code</code></pre>
+
+    <div class="alert alert-tip">
+      The CLI exits with code <code>0</code> on pass and <code>1</code> on gate failure, making it compatible with any CI system that checks exit codes.
+    </div>
+  </section>
+
+  <!-- Quality Gates -->
+  <section id="quality-gates">
+    <h2>Quality Gates</h2>
+    <p>Quality gates are pass/fail policies that decide whether a build is safe to release.</p>
+
+    <table class="threshold-table">
+      <thead>
+        <tr>
+          <th>Threshold</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Max new critical issues</td>
+          <td><code>0</code></td>
+          <td>Maximum new critical-severity findings allowed. Set to <code>0</code> for zero-tolerance.</td>
+        </tr>
+        <tr>
+          <td>Max unresolved regressions</td>
+          <td><code>0</code></td>
+          <td>Maximum issues that reappeared after being marked resolved. Set to <code>0</code> for strict enforcement.</td>
+        </tr>
+        <tr>
+          <td>Min pass rate</td>
+          <td><code>0.8</code></td>
+          <td>Minimum fraction of scenarios that must pass (80% by default).</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Policy File</h3>
+    <p>Commit thresholds to your repo at <code>.autouat/policy.json</code>:</p>
+<pre><code>{
+  <span class="key">"maxNewCritical"</span>: <span class="num">0</span>,
+  <span class="key">"maxUnresolvedRegressions"</span>: <span class="num">0</span>,
+  <span class="key">"minPassRate"</span>: <span class="num">0.8</span>
+}</code></pre>
+
+    <h3>Suppression Rules</h3>
+    <p>Auto-dismiss known noise with <code>.autouat/suppressions.json</code>. Useful for third-party iframes, known flaky paths, or accepted issues.</p>
+  </section>
+
+  <!-- Troubleshooting -->
+  <section id="troubleshooting">
+    <h2>Troubleshooting</h2>
+
+    <h3>Credentials &amp; API Keys</h3>
+    <div class="card">
+      <p><strong>Missing API key</strong></p>
+      <p style="margin-bottom:0">LLM critic requires an API key. Go to <strong>Settings &rarr; General</strong>, select your provider, and paste the key. Keys are stored encrypted via Electron <code>safeStorage</code>.</p>
+    </div>
+    <div class="card">
+      <p><strong>Auth walls detected</strong></p>
+      <p style="margin-bottom:0">Configure login profiles in <strong>Settings &rarr; Logins</strong>. Walk through the wizard with your login URL and credentials. AutoUAT will replay the login flow before each authenticated scenario.</p>
+    </div>
+
+    <h3>Network &amp; Connectivity</h3>
+    <div class="card">
+      <p><strong>Navigation timeout</strong></p>
+      <p>Check that the site is running on the correct port with the right protocol (HTTP vs HTTPS). Also check for firewall/VPN interference and self-signed certificate errors.</p>
+      <p style="margin-bottom:0">Common dev ports: <code>3000</code> (Next.js), <code>5173</code> (Vite), <code>8080</code> (general).</p>
+    </div>
+
+    <h3>Discovery &amp; SPAs</h3>
+    <div class="card">
+      <p><strong>SPA not discovering routes</strong></p>
+      <p style="margin-bottom:0">Enable <strong>SPA Navigation</strong> in <strong>Settings &rarr; Discovery</strong>. Add seed paths for key routes. Increase the crawl depth. Run <strong>Probe</strong> first to verify what the crawler sees before the full run.</p>
+    </div>
+
+    <div class="alert alert-warn">
+      If discovery still misses routes, add them explicitly as seed paths in Config mode. This is common for hash-based routers (<code>#/route</code>) and client-side-only redirects.
+    </div>
+  </section>
+
+</main>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  document.querySelectorAll('#sidebar a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      document.getElementById('sidebar').classList.remove('open');
+    });
+  });
+
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.sidebar-nav a');
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        navLinks.forEach(function(l) { l.classList.remove('active'); });
+        var link = document.querySelector('.sidebar-nav a[href="#' + entry.target.id + '"]');
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(function(s) { observer.observe(s); });
+</script>
+</body>
+</html>
