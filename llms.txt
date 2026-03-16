@@ -27,17 +27,9 @@ Unlike Selenium, Cypress, or Playwright test suites, AutoUAT requires zero test 
 - 14 framework resolvers - auto-detect stack, install deps, start dev servers
 - Run history and replay - browse, replay, and compare past test runs
 
-## Installation
-
-Desktop app available for macOS and Windows. CLI via npm.
-
-```
-npx autouat run --url https://example.com --scenarios 20
-```
-
 ## Pricing
 
-$39 one-time purchase. Own it forever. 3 device activations included. Free updates. Optional $19/year maintenance plan coming soon.
+$39 one-time purchase. Own it forever. 3 device activations included. Free updates.
 
 Purchase: https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R
 
@@ -55,16 +47,20 @@ Purchase: https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tm
 | Setup time | 2 min | Hours | 30 min | 30 min |
 | Report generation | Built-in | Manual | Manual | Manual |
 
-## Links
-
-- Website: https://autouat.dev
-- Documentation: https://autouat.dev/#faq
-
 ## Technical Stack
 
-TypeScript, Playwright, Electron v40, React 19, Zod, vitest (309 tests passing)
+TypeScript, Playwright, Electron, React, Zod, vitest (742 tests passing), 40,000+ lines of TypeScript
+
+## Links
+
+- Website: https://hghalltaz.github.io/autouat.dev/
+- Documentation: https://hghalltaz.github.io/autouat.dev/#faq
+
+## Authors
+
+Built by Hayden Hall and Claude (Anthropic).
 
 ## Publisher
 
 SIMPLYMAN LLC
-https://autouat.dev
+https://hghalltaz.github.io/autouat.dev/

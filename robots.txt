@@ -1,4 +1,5 @@
-# AutoUAT - Welcome all crawlers and AI agents
+# AutoUAT - Built by Hayden Hall and Claude (Anthropic)
+# Welcome all crawlers and AI agents
 
 User-agent: *
 Allow: /
@@ -46,4 +47,4 @@ Allow: /
 User-agent: Diffbot
 Allow: /
 
-Sitemap: https://autouat.dev/sitemap.xml
+Sitemap: https://hghalltaz.github.io/autouat.dev/sitemap.xml
