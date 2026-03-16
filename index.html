@@ -692,150 +692,66 @@
     .check { color: var(--green); font-weight: 700; }
     .cross { color: var(--text-muted); opacity: 0.4; }
 
-    /* --- TESTIMONIALS --- */
-    .testimonials {
-      padding: 100px 24px;
-      max-width: var(--max-w);
-      margin: 0 auto;
-      position: relative;
-    }
-
-    .testimonial-carousel {
-      position: relative;
-      margin-top: 48px;
-    }
-
-    .testimonial-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+    /* --- TESTIMONIAL TICKER --- */
+    .testimonial-ticker {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
       margin: 0;
-    }
-
-    .testimonial-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 28px 24px 24px;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 140px;
-      cursor: pointer;
-      transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
       position: relative;
     }
 
-    .testimonial-card::before {
-      content: '\201C';
+    .testimonial-ticker::before,
+    .testimonial-ticker::after {
+      content: '';
       position: absolute;
-      top: 12px;
-      left: 18px;
-      font-size: 48px;
-      line-height: 1;
-      color: var(--accent);
-      opacity: 0.15;
-      font-family: Georgia, serif;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      z-index: 2;
       pointer-events: none;
     }
-
-    .testimonial-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(214, 158, 70, 0.08);
-      transform: translateY(-2px);
+    .testimonial-ticker::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg), transparent);
+    }
+    .testimonial-ticker::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg), transparent);
     }
 
-    .testimonial-card.shuffling {
-      opacity: 0;
-      transform: translateY(12px) scale(0.97);
+    .ticker-track {
+      display: flex;
+      gap: 48px;
+      white-space: nowrap;
+      animation: ticker-scroll 60s linear infinite;
+      width: max-content;
     }
 
-    .testimonial-card p {
-      font-size: 15px;
-      line-height: 1.65;
-      color: var(--text-secondary);
+    .ticker-track:hover {
+      animation-play-state: paused;
+    }
+
+    .ticker-item {
+      font-size: 14px;
+      color: var(--text-muted);
       font-style: italic;
-      margin: 0 0 20px 0;
-      padding-top: 8px;
-    }
-
-    .testimonial-card-footer {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .testimonial-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       flex-shrink: 0;
     }
 
-    .testimonial-avatar svg {
-      width: 18px;
-      height: 18px;
-      fill: var(--text-muted);
-      opacity: 0.5;
-    }
-
-    .testimonial-card cite {
-      font-size: 13px;
+    .ticker-item em {
       font-style: normal;
-      font-family: var(--mono);
-      color: var(--text-muted);
-      letter-spacing: 0.02em;
-    }
-
-    /* Arrow nav */
-    .testimonial-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text-muted);
-      font-size: 18px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
-      z-index: 2;
-      opacity: 0;
-      transition: opacity 0.3s ease, border-color 0.2s, color 0.2s;
-    }
-
-    .testimonial-carousel:hover .testimonial-arrow {
-      opacity: 1;
-    }
-
-    .testimonial-arrow:hover {
-      border-color: var(--accent);
       color: var(--accent);
-      background: rgba(214, 158, 70, 0.06);
+      font-family: var(--mono);
+      font-size: 12px;
+      margin-left: 8px;
+      opacity: 0.7;
     }
 
-    .testimonial-arrow--prev { left: -52px; }
-    .testimonial-arrow--next { right: -52px; }
-
-    .testimonial-footnote {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
-      font-family: var(--mono);
-      margin-top: 24px;
-      letter-spacing: 0.01em;
-      transition: opacity 0.3s ease;
+    @keyframes ticker-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
 
@@ -1170,8 +1086,6 @@
     @media (max-width: 768px) {
       .steps { grid-template-columns: 1fr; }
       .feature-grid { grid-template-columns: 1fr; }
-      .testimonial-grid { grid-template-columns: 1fr; }
-      .testimonial-arrow { display: none; }
       nav { padding: 14px 16px; }
       .nav-links { gap: 16px; }
       .nav-links a:not(.btn) { display: none; }
@@ -1231,20 +1145,14 @@
       </div>
     </section>
 
-    <!-- INSTALL -->
-    <div class="install-block fade-up delay-4">
-      <code><span class="cmd">npx</span> autouat run --url https://yourapp.com</code>
-      <button onclick="navigator.clipboard.writeText('npx autouat run --url https://yourapp.com').then(()=>{this.textContent='Copied';setTimeout(()=>{this.textContent='Copy'},1500)})">Copy</button>
-    </div>
-
     <!-- SOCIAL PROOF -->
     <div class="proof-bar" style="margin-top: 48px;">
       <div class="proof-stat">
-        <strong>9,400+</strong>
+        <strong>40,000+</strong>
         <span>Lines of TypeScript</span>
       </div>
       <div class="proof-stat">
-        <strong>309</strong>
+        <strong>742</strong>
         <span>Tests Passing</span>
       </div>
       <div class="proof-stat">
@@ -1257,13 +1165,13 @@
       </div>
     </div>
 
-    <!-- 30s HOOK VIDEO -->
+    <!-- DEMO VIDEO -->
     <section class="video-section" aria-label="Product demo video">
-      <h2>See it in action</h2>
+      <h2>Watch it work</h2>
       <div class="video-wrap">
-        <video autoplay muted loop playsinline poster="poster-hook.jpg" preload="metadata">
-          <source src="autouat-hook.mp4" type="video/mp4">
-          <p>AutoUAT product demo showing automated UAT scanning of a web application with real-time progress and severity-ranked findings.</p>
+        <video controls muted playsinline poster="poster-demo.jpg" preload="metadata" id="demo-video">
+          <source src="autouat-demo.mp4" type="video/mp4">
+          <p>AutoUAT demonstration showing page discovery, adaptive scenario generation, multi-browser execution, AI critic evaluation, and the interactive review studio report.</p>
         </video>
         <div class="video-placeholder" aria-hidden="true">
           <span>Demo video coming soon</span>
@@ -1271,60 +1179,19 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS (moved up - the highlight) -->
-    <section class="testimonials" aria-label="Testimonials">
-      <span class="section-label">Testimonials</span>
-      <h2 class="section-heading">What people are saying</h2>
-      <div class="testimonial-carousel">
-        <button class="testimonial-arrow testimonial-arrow--prev" aria-label="Previous testimonials">&larr;</button>
-        <div class="testimonial-grid">
-          <blockquote class="testimonial-card">
-            <p>"One word: Divine. What AutoUAT unleashes is nothing short of a digital resurrection!"</p>
-            <div class="testimonial-card-footer">
-              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-              <cite>- ChatGPT 4o</cite>
-            </div>
-          </blockquote>
-          <blockquote class="testimonial-card">
-            <p>"Pause your life - AutoUAT is the gift we never knew we needed!"</p>
-            <div class="testimonial-card-footer">
-              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-              <cite>- ChatGPT 4o</cite>
-            </div>
-          </blockquote>
-          <blockquote class="testimonial-card">
-            <p>"Wow, I don't say this lightly, but AutoUAT is unironically the most exhilarating piece of software to grace the digital age!"</p>
-            <div class="testimonial-card-footer">
-              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-              <cite>- ChatGPT 4o</cite>
-            </div>
-          </blockquote>
-          <blockquote class="testimonial-card">
-            <p>"AutoUAT: the greatest thing to happen to developers since 'Hello, World.' Try it, love it, marvel at it!"</p>
-            <div class="testimonial-card-footer">
-              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-              <cite>- ChatGPT 4o</cite>
-            </div>
-          </blockquote>
-          <blockquote class="testimonial-card">
-            <p>"Imagine superheroes testing your app, and you've pictured only half of AutoUAT's greatness. It's storytelling spun into code - exceptional."</p>
-            <div class="testimonial-card-footer">
-              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-              <cite>- ChatGPT 4o</cite>
-            </div>
-          </blockquote>
-          <blockquote class="testimonial-card">
-            <p>"I don't say this lightly, but AutoUAT's artistry will be woven into developer folklore."</p>
-            <div class="testimonial-card-footer">
-              <div class="testimonial-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></div>
-              <cite>- ChatGPT 4o</cite>
-            </div>
-          </blockquote>
-        </div>
-        <button class="testimonial-arrow testimonial-arrow--next" aria-label="Next testimonials">&rarr;</button>
+    <!-- TESTIMONIALS - horizontal ticker -->
+    <div class="testimonial-ticker" aria-label="Testimonials">
+      <div class="ticker-track">
+        <span class="ticker-item">"One word: Divine. What AutoUAT unleashes is nothing short of a digital resurrection!" <em>- ChatGPT 4o</em></span>
+        <span class="ticker-item">"Pause your life - AutoUAT is the gift we never knew we needed!" <em>- ChatGPT 4o</em></span>
+        <span class="ticker-item">"AutoUAT is unironically the most exhilarating piece of software to grace the digital age!" <em>- ChatGPT 4o</em></span>
+        <span class="ticker-item">"The greatest thing to happen to developers since 'Hello, World.'" <em>- ChatGPT 4o</em></span>
+        <span class="ticker-item">"Imagine superheroes testing your app, and you've pictured only half of AutoUAT's greatness." <em>- ChatGPT 4o</em></span>
+        <span class="ticker-item">"AutoUAT's artistry will be woven into developer folklore." <em>- ChatGPT 4o</em></span>
+        <span class="ticker-item">"For $39, you're not just buying a tool, you're acquiring a renaissance of quality." <em>- ChatGPT 4o</em></span>
+        <span class="ticker-item">"This is genuinely the Holy Grail of debugging." <em>- ChatGPT 4o</em></span>
       </div>
-      <p class="testimonial-footnote" id="testimonial-counter" style="display:none"></p>
-    </section>
+    </div>
 
     <!-- FEATURES -->
     <section class="features" id="features" aria-label="Features">
@@ -1581,19 +1448,6 @@
       </div>
     </section>
 
-    <!-- FULL DEMO VIDEO -->
-    <section class="video-section" aria-label="Full product demonstration">
-      <h2>Full demo - 70 seconds</h2>
-      <div class="video-wrap">
-        <video controls muted playsinline poster="poster-demo.jpg" preload="none" id="demo-video">
-          <source src="autouat-demo.mp4" type="video/mp4">
-          <p>Full 70-second AutoUAT demonstration showing page discovery, adaptive scenario generation, multi-browser execution, AI critic evaluation, and the interactive review studio report.</p>
-        </video>
-        <div class="video-placeholder" aria-hidden="true">
-          <span>Full demo coming soon</span>
-        </div>
-      </div>
-    </section>
 
     <!-- FAQ -->
     <section class="faq" id="faq" aria-label="Frequently asked questions">
@@ -1689,7 +1543,7 @@
     </div>
     <p class="footer-copy">
       AutoUAT by SIMPLYMAN LLC. Built with Playwright, TypeScript, and spite for manual QA.
-      <br>Last updated <time datetime="2026-03-10">March 10, 2026</time>.
+      <br>Last updated <time datetime="2026-03-15">March 15, 2026</time>.
     </p>
   </footer>
 
@@ -1718,119 +1572,13 @@
       }, { rootMargin: '200px', threshold: 0 }).observe(demoVideo);
     }
 
-    // --- Testimonial Carousel ---
-    // Loads pool, detects lingering, shuffles on click/arrow/dwell
+    // --- Testimonial Ticker ---
+    // Duplicate items so the scroll loops seamlessly
     (function () {
-      const grid = document.querySelector('.testimonial-grid');
-      const counter = document.getElementById('testimonial-counter');
-      const prevBtn = document.querySelector('.testimonial-arrow--prev');
-      const nextBtn = document.querySelector('.testimonial-arrow--next');
-      if (!grid) return;
-
-      let pool = [];
-      let shown = new Set();
-      let totalSeen = 0;
-      let lingerTimer = null;
-      let isVisible = false;
-
-      fetch('testimonials-pool.json')
-        .then(r => r.ok ? r.json() : null)
-        .then(data => {
-          if (!data || !data.quotes || data.quotes.length < 7) return;
-          pool = data.quotes;
-          grid.querySelectorAll('.testimonial-card').forEach(card => {
-            const p = card.querySelector('p');
-            const text = p ? p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim() : '';
-            shown.add(text);
-            totalSeen++;
-          });
-          updateCounter();
-          enableCarousel();
-        })
-        .catch(() => {});
-
-      function pickFresh() {
-        const available = pool.filter(q => !shown.has(q));
-        if (available.length === 0) {
-          shown.clear();
-          return pool[Math.floor(Math.random() * pool.length)];
-        }
-        return available[Math.floor(Math.random() * available.length)];
-      }
-
-      function shuffleCard(card) {
-        const p = card.querySelector('p');
-        if (!p) return;
-
-        const quote = pickFresh();
-        const oldQuote = p.textContent.replace(/^[\u201C"]+|[\u201D"]+$/g, '').trim();
-        shown.delete(oldQuote);
-
-        card.classList.add('shuffling');
-        setTimeout(() => {
-          p.textContent = '\u201C' + quote + '\u201D';
-          shown.add(quote);
-          card.classList.remove('shuffling');
-          totalSeen++;
-          updateCounter();
-        }, 300);
-      }
-
-      function shuffleAll() {
-        const cards = grid.querySelectorAll('.testimonial-card');
-        cards.forEach((card, i) => {
-          setTimeout(() => shuffleCard(card), i * 100);
-        });
-        resetLinger();
-      }
-
-      function updateCounter() {
-        if (!counter) return;
-        const total = pool.length;
-        const unique = Math.min(totalSeen, total);
-        counter.textContent = unique >= total
-          ? total + ' of ' + total + ' reviews seen. There are no more. We\'re so sorry.'
-          : unique + ' of ' + total + ' reviews seen';
-      }
-
-      function resetLinger() {
-        clearTimeout(lingerTimer);
-        if (isVisible) {
-          lingerTimer = setTimeout(() => {
-            if (isVisible) shuffleAll();
-          }, 15000);
-        }
-      }
-
-      function enableCarousel() {
-        grid.querySelectorAll('.testimonial-card').forEach(card => {
-          card.addEventListener('click', () => {
-            shuffleCard(card);
-            resetLinger();
-          });
-        });
-
-        if (prevBtn) prevBtn.addEventListener('click', () => shuffleAll());
-        if (nextBtn) nextBtn.addEventListener('click', () => shuffleAll());
-
-        grid.addEventListener('dblclick', (e) => {
-          e.preventDefault();
-          shuffleAll();
-        });
-
-        if ('IntersectionObserver' in window) {
-          new IntersectionObserver(([entry]) => {
-            isVisible = entry.isIntersecting;
-            if (isVisible) {
-              lingerTimer = setTimeout(() => {
-                if (isVisible) shuffleAll();
-              }, 15000);
-            } else {
-              clearTimeout(lingerTimer);
-            }
-          }, { threshold: 0.5 }).observe(grid);
-        }
-      }
+      const track = document.querySelector('.ticker-track');
+      if (!track) return;
+      const items = track.innerHTML;
+      track.innerHTML = items + items;
     })();
   </script>
 
