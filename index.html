@@ -1121,6 +1121,7 @@
         <a href="#features">Features</a>
         <a href="#comparison">Compare</a>
         <a href="#faq">FAQ</a>
+        <a href="docs/">Docs</a>
         <a href="https://buy.polar.sh/polar_cl_Wq5KOusjR20r7FkluLa4X8bqKMdPz9ICDbkqs2tmJ8R" class="btn btn-buy">Buy - $39</a>
       </div>
     </nav>
@@ -1400,41 +1401,6 @@
     </section>
 
     <!-- CLI DEMO -->
-    <section class="cli-section" aria-label="CLI demonstration">
-      <span class="section-label">Developer Experience</span>
-      <h2 class="section-heading">Works from the terminal</h2>
-      <p class="section-sub">Pipe it into CI/CD. Run it from Claude Code. Script it with MCP.</p>
-      <div style="margin-bottom: 32px; text-align: center;">
-        <img src="autouat-cli.gif" alt="AutoUAT CLI terminal session" loading="lazy"
-             style="width: 100%; max-width: 800px; border-radius: var(--radius-lg); border: 1px solid var(--border);">
-      </div>
-      <div class="cli-window">
-        <div class="cli-titlebar">
-          <div class="cli-dot cli-dot-red"></div>
-          <div class="cli-dot cli-dot-yellow"></div>
-          <div class="cli-dot cli-dot-green"></div>
-        </div>
-        <div class="cli-body">
-          <span class="prompt">$</span> npx autouat run <span class="flag">--url</span> https://myapp.com <span class="flag">--scenarios</span> 30<br>
-          <br>
-          <span class="output">  Discovering pages............. </span><span class="bold">12 found</span><br>
-          <span class="output">  Generating scenarios......... </span><span class="bold">30 created</span><br>
-          <span class="output">  Running Chromium + Firefox + WebKit...</span><br>
-          <br>
-          <span class="bold">  ================================</span><br>
-          <span class="bold">  RESULTS: 30 scenarios, 8 findings</span><br>
-          <span class="bold">  ================================</span><br>
-          <span class="error">  CRITICAL  2</span>  <span class="output">console errors, missing error boundary</span><br>
-          <span class="error">  HIGH      3</span>  <span class="output">layout overflow at 375px, 768px</span><br>
-          <span class="output">  MEDIUM    2  accessibility: missing alt, low contrast</span><br>
-          <span class="output">  LOW       1  performance: LCP 4.2s on /dashboard</span><br>
-          <br>
-          <span class="success">  Report:</span> <span class="output">./artifacts/report.html</span><br>
-          <span class="success">  Studio:</span> <span class="output">./artifacts/review-studio.html</span><br>
-        </div>
-      </div>
-    </section>
-
 
     <!-- FAQ -->
     <section class="faq" id="faq" aria-label="Frequently asked questions">
@@ -1487,7 +1453,7 @@
 
       <details class="faq-item">
         <summary>Can I use AutoUAT in CI/CD?</summary>
-        <p>Yes. The CLI runs headless and outputs structured results. Run <code>npx autouat run --url https://yourapp.com --scenarios 20</code> in any CI pipeline. Reports are saved as self-contained HTML files that can be uploaded as build artifacts.</p>
+        <p>Yes. AutoUAT produces self-contained HTML reports that can be uploaded as build artifacts and reviewed before release.</p>
       </details>
     </section>
 
